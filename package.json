@@ -29,7 +29,11 @@
     "build-full-web-app": "node build-full-web-app.js",
     "build-webpack": "node build-webpack.js",
     "prepare-web-export": "node prepare-web-export.js",
-    "serve-alt": "node serve-web-alt.js"
+    "serve-alt": "node serve-web-alt.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",

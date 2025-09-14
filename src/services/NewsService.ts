@@ -2,6 +2,9 @@
 // Сервис для работы с новостями
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logError, logInfo, logDebug } from '../utils/logger';
+import { handleError, createError, ErrorType } from '../utils/errorHandler';
+import { Validator } from '../utils/validators';
 
 // Тип для новости
 export interface NewsItem {
@@ -25,10 +28,15 @@ const NEWS_STORAGE_KEY = '@arsenal_school_news';
  */
 export const getAllNews = async (): Promise<NewsItem[]> => {
   try {
+    logDebug('Getting all news');
     const newsData = await AsyncStorage.getItem(NEWS_STORAGE_KEY);
-    return newsData ? JSON.parse(newsData) : [];
+    const news = newsData ? JSON.parse(newsData) : [];
+    
+    logInfo('All news retrieved', { count: news.length });
+    return news;
   } catch (error) {
-    console.error('Ошибка при получении новостей:', error);
+    const appError = handleError(error, { operation: 'getAllNews' });
+    logError('Error getting all news', appError);
     return [];
   }
 };
@@ -40,6 +48,25 @@ export const createNews = async (
   newsItem: Omit<NewsItem, 'id' | 'publishedAt'>
 ): Promise<NewsItem> => {
   try {
+    // Валидация данных новости
+    if (!newsItem.title || newsItem.title.trim().length === 0) {
+      throw createError(ErrorType.VALIDATION, 'Заголовок новости обязателен');
+    }
+
+    if (!newsItem.content || newsItem.content.trim().length === 0) {
+      throw createError(ErrorType.VALIDATION, 'Содержимое новости обязательно');
+    }
+
+    if (newsItem.title.length > 200) {
+      throw createError(ErrorType.VALIDATION, 'Заголовок новости слишком длинный');
+    }
+
+    if (newsItem.content.length > 5000) {
+      throw createError(ErrorType.VALIDATION, 'Содержимое новости слишком длинное');
+    }
+
+    logDebug('Creating new news item', { title: newsItem.title });
+    
     const allNews = await getAllNews();
 
     const newNewsItem: NewsItem = {
@@ -51,10 +78,12 @@ export const createNews = async (
     const updatedNews = [newNewsItem, ...allNews];
     await AsyncStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(updatedNews));
 
+    logInfo('News item created successfully', { id: newNewsItem.id, title: newNewsItem.title });
     return newNewsItem;
   } catch (error) {
-    console.error('Ошибка при создании новости:', error);
-    throw new Error('Не удалось создать новость');
+    const appError = handleError(error, { title: newsItem.title, operation: 'createNews' });
+    logError('Error creating news item', appError, { title: newsItem.title });
+    throw appError;
   }
 };
 
@@ -66,10 +95,30 @@ export const updateNews = async (
   updates: Partial<NewsItem>
 ): Promise<NewsItem | null> => {
   try {
+    logDebug('Updating news item', { id, updates });
+    
+    // Валидация обновлений
+    if (updates.title !== undefined && (!updates.title || updates.title.trim().length === 0)) {
+      throw createError(ErrorType.VALIDATION, 'Заголовок новости не может быть пустым');
+    }
+
+    if (updates.content !== undefined && (!updates.content || updates.content.trim().length === 0)) {
+      throw createError(ErrorType.VALIDATION, 'Содержимое новости не может быть пустым');
+    }
+
+    if (updates.title && updates.title.length > 200) {
+      throw createError(ErrorType.VALIDATION, 'Заголовок новости слишком длинный');
+    }
+
+    if (updates.content && updates.content.length > 5000) {
+      throw createError(ErrorType.VALIDATION, 'Содержимое новости слишком длинное');
+    }
+    
     const allNews = await getAllNews();
     const newsIndex = allNews.findIndex(news => news.id === id);
 
     if (newsIndex === -1) {
+      logDebug('News item not found', { id });
       return null;
     }
 
@@ -81,10 +130,12 @@ export const updateNews = async (
     allNews[newsIndex] = updatedNewsItem;
     await AsyncStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(allNews));
 
+    logInfo('News item updated successfully', { id });
     return updatedNewsItem;
   } catch (error) {
-    console.error('Ошибка при обновлении новости:', error);
-    throw new Error('Не удалось обновить новость');
+    const appError = handleError(error, { id, operation: 'updateNews' });
+    logError('Error updating news item', appError, { id });
+    throw appError;
   }
 };
 
@@ -93,13 +144,24 @@ export const updateNews = async (
  */
 export const deleteNews = async (id: string): Promise<boolean> => {
   try {
+    logDebug('Deleting news item', { id });
+    
     const allNews = await getAllNews();
+    const newsExists = allNews.some(news => news.id === id);
+    
+    if (!newsExists) {
+      logDebug('News item not found for deletion', { id });
+      return false;
+    }
+    
     const filteredNews = allNews.filter(news => news.id !== id);
-
     await AsyncStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(filteredNews));
+    
+    logInfo('News item deleted successfully', { id });
     return true;
   } catch (error) {
-    console.error('Ошибка при удалении новости:', error);
+    const appError = handleError(error, { id, operation: 'deleteNews' });
+    logError('Error deleting news item', appError, { id });
     return false;
   }
 };
@@ -109,10 +171,15 @@ export const deleteNews = async (id: string): Promise<boolean> => {
  */
 export const getImportantNews = async (): Promise<NewsItem[]> => {
   try {
+    logDebug('Getting important news');
     const allNews = await getAllNews();
-    return allNews.filter(news => news.isImportant);
+    const importantNews = allNews.filter(news => news.isImportant);
+    
+    logInfo('Important news retrieved', { count: importantNews.length });
+    return importantNews;
   } catch (error) {
-    console.error('Ошибка при получении важных новостей:', error);
+    const appError = handleError(error, { operation: 'getImportantNews' });
+    logError('Error getting important news', appError);
     return [];
   }
 };
@@ -122,10 +189,15 @@ export const getImportantNews = async (): Promise<NewsItem[]> => {
  */
 export const getNewsByTag = async (tag: string): Promise<NewsItem[]> => {
   try {
+    logDebug('Getting news by tag', { tag });
     const allNews = await getAllNews();
-    return allNews.filter(news => news.tags.includes(tag));
+    const filteredNews = allNews.filter(news => news.tags.includes(tag));
+    
+    logInfo('News by tag retrieved', { tag, count: filteredNews.length });
+    return filteredNews;
   } catch (error) {
-    console.error('Ошибка при поиске новостей по тегу:', error);
+    const appError = handleError(error, { tag, operation: 'getNewsByTag' });
+    logError('Error getting news by tag', appError, { tag });
     return [];
   }
 };
