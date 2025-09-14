@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Login Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #f5f7fa;
+      }
+      .test-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .test-result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      #testResults {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>Тестирование страницы входа/регистрации</h1>
+      <button onclick="runAllTests()">Запустить все тесты</button>
+      <button onclick="testElements()">Тест 1: Проверка элементов</button>
+      <button onclick="testFunctions()">Тест 2: Проверка функций</button>
+      <button onclick="testTabSwitching()">Тест 3: Переключение вкладок</button>
+      <button onclick="testRegistration()">Тест 4: Регистрация</button>
+
+      <div id="testResults"></div>
+    </div>
+
+    <script>
+      // Function to log test results
+      function logResult(message, type = 'info') {
+        const resultsDiv = document.getElementById('testResults');
+        const resultDiv = document.createElement('div');
+        resultDiv.className = `test-result ${type}`;
+        resultDiv.textContent = message;
+        resultsDiv.appendChild(resultDiv);
+        console.log(`[${type.toUpperCase()}] ${message}`);
+      }
+
+      // Test 1: Check if all required elements exist
+      function testElements() {
+        logResult('=== Тест 1: Проверка элементов ===', 'info');
+        const requiredElements = [
+          'authSection',
+          'dashboard',
+          'loginTab',
+          'registerTab',
+          'branchSelector',
+          'regName',
+          'regEmail',
+          'regPassword',
+          'regRole',
+          'regBranch',
+          'email',
+          'password',
+        ];
+
+        let allElementsFound = true;
+        requiredElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            logResult(`✓ Элемент найден: ${id}`, 'success');
+          } else {
+            logResult(`✗ Элемент НЕ найден: ${id}`, 'error');
+            allElementsFound = false;
+          }
+        });
+
+        if (allElementsFound) {
+          logResult('✓ Все необходимые элементы найдены', 'success');
+        } else {
+          logResult('✗ Некоторые необходимые элементы отсутствуют', 'error');
+        }
+      }
+
+      // Test 2: Check if functions exist
+      function testFunctions() {
+        logResult('=== Тест 2: Проверка функций ===', 'info');
+        const requiredFunctions = ['showTab', 'selectRole', 'selectBranch', 'register', 'login'];
+        let allFunctionsExist = true;
+
+        requiredFunctions.forEach(funcName => {
+          if (typeof window[funcName] === 'function') {
+            logResult(`✓ Функция существует: ${funcName}`, 'success');
+          } else {
+            logResult(`✗ Функция отсутствует: ${funcName}`, 'error');
+            allFunctionsExist = false;
+          }
+        });
+
+        if (allFunctionsExist) {
+          logResult('✓ Все необходимые функции существуют', 'success');
+        } else {
+          logResult('✗ Некоторые необходимые функции отсутствуют', 'error');
+        }
+      }
+
+      // Test 3: Try to switch to registration tab
+      function testTabSwitching() {
+        logResult('=== Тест 3: Переключение вкладок ===', 'info');
+        try {
+          if (typeof showTab === 'function') {
+            showTab('register');
+            logResult('✓ Переключение на вкладку регистрации работает', 'success');
+            // Switch back to login tab
+            showTab('login');
+            logResult('✓ Переключение на вкладку входа работает', 'success');
+          } else {
+            logResult('✗ Функция showTab недоступна', 'error');
+          }
+        } catch (error) {
+          logResult(`✗ Ошибка при переключении вкладок: ${error.message}`, 'error');
+        }
+      }
+
+      // Test 4: Try registration
+      function testRegistration() {
+        logResult('=== Тест 4: Регистрация ===', 'info');
+        try {
+          // Fill in registration form
+          const regName = document.getElementById('regName');
+          const regEmail = document.getElementById('regEmail');
+          const regPassword = document.getElementById('regPassword');
+          const regRole = document.getElementById('regRole');
+          const regBranch = document.getElementById('regBranch');
+
+          if (regName && regEmail && regPassword && regRole && regBranch) {
+            regName.value = 'Тестовый пользователь';
+            regEmail.value = 'test@example.com';
+            regPassword.value = 'testpassword';
+            regRole.value = 'child';
+            regBranch.value = 'zjulebino';
+
+            logResult('✓ Форма регистрации заполнена', 'success');
+          } else {
+            logResult(
+              '✗ Невозможно заполнить форму регистрации - некоторые поля отсутствуют',
+              'error'
+            );
+          }
+        } catch (error) {
+          logResult(`✗ Ошибка при тестировании регистрации: ${error.message}`, 'error');
+        }
+      }
+
+      // Run all tests
+      function runAllTests() {
+        // Clear previous results
+        document.getElementById('testResults').innerHTML = '';
+
+        testElements();
+        testFunctions();
+        testTabSwitching();
+        testRegistration();
+
+        logResult('=== Все тесты завершены ===', 'info');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тестирование веб-версии приложения</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #1976d2;
+        text-align: center;
+      }
+      .instructions {
+        background-color: #e3f2fd;
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      .status {
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        text-align: center;
+        font-weight: bold;
+      }
+      .success {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-left: 5px solid #4caf50;
+      }
+      .button {
+        display: inline-block;
+        background-color: #1976d2;
+        color: white;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        margin: 10px 5px;
+      }
+      .button:hover {
+        background-color: #1565c0;
+      }
+      .note {
+        background-color: #fff3e0;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 5px solid #ff9800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Тестирование веб-версии приложения</h1>
+
+      <div class="status success">✅ Веб-сервер успешно запущен на порту 8082</div>
+
+      <div class="instructions">
+        <h2>Инструкции по тестированию:</h2>
+        <p>
+          Веб-версия приложения футбольной школы Arsenal запущена и доступна по следующим адресам:
+        </p>
+        <ul>
+          <li>
+            <strong>Локальный доступ:</strong>
+            <a href="http://localhost:8082" target="_blank">http://localhost:8082</a>
+          </li>
+          <li>
+            <strong>Сетевой доступ:</strong>
+            <a href="http://10.0.85.2:8082" target="_blank">http://10.0.85.2:8082</a>
+          </li>
+        </ul>
+        <p>Нажмите на одну из кнопок ниже, чтобы открыть приложение в новой вкладке браузера.</p>
+      </div>
+
+      <div style="text-align: center">
+        <a href="http://localhost:8082" class="button" target="_blank">Открыть локальную версию</a>
+        <a href="http://10.0.85.2:8082" class="button" target="_blank">Открыть сетевую версию</a>
+      </div>
+
+      <div class="note">
+        <h3>Примечания:</h3>
+        <ul>
+          <li>Если страница не открывается, убедитесь, что сервер запущен</li>
+          <li>Для остановки сервера нажмите Ctrl+C в терминале</li>
+          <li>Если порт 8082 занят, сервер автоматически выберет другой порт</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

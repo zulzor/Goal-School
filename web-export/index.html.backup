@@ -1,0 +1,3107 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Футбольная школа "Арсенал"</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#023474" />
+    <link rel="apple-touch-icon" href="992cf1d34fb7a6bde5b1.png" />
+    <style>
+      /* Стили для модального окна панели управления */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, #023474 0%, #0a4a9f 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+
+      .close {
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .close:hover {
+        color: #ddd;
+      }
+
+      .modal-body {
+        padding: 20px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .management-tabs {
+        display: flex;
+        border-bottom: 2px solid #023474;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .management-tabs .nav-btn {
+        background: none;
+        border: none;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #333;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .management-tabs .nav-btn:hover {
+        background-color: #f0f0f0;
+      }
+
+      .management-tabs .nav-btn.active {
+        border-bottom: 3px solid #023474;
+        color: #023474;
+        font-weight: bold;
+      }
+
+      #managementContent {
+        min-height: 400px;
+      }
+
+      /* Адаптивность для мобильных устройств */
+      @media (max-width: 768px) {
+        .modal-content {
+          width: 95%;
+          margin: 2% auto;
+        }
+
+        .management-tabs {
+          flex-direction: column;
+        }
+
+        .management-tabs .nav-btn {
+          width: 100%;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+        }
+
+        .management-tabs .nav-btn.active {
+          border-bottom: 1px solid #eee;
+          border-left: 3px solid #023474;
+        }
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .header {
+        background: linear-gradient(135deg, #023474 0%, #012a5e 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .logo {
+        font-size: 48px;
+        margin-bottom: 10px;
+      }
+      .app-title {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+      .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-top: 10px;
+      }
+      .content {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+      .auth-section {
+        flex: 1;
+        min-width: 300px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      }
+      .dashboard {
+        flex: 2;
+        min-width: 300px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        display: none;
+      }
+      h2 {
+        color: #023474;
+        margin-top: 0;
+      }
+      .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+        width: 100%; /* Ensure full width */
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e1e5eb;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+      input:focus,
+      select:focus {
+        border-color: #023474;
+        outline: none;
+      }
+      .btn {
+        background: linear-gradient(135deg, #ef0107 0%, #c20106 100%);
+        color: white;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        font-weight: bold;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin: 10px 0;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 1, 7, 0.3);
+      }
+      .btn:active {
+        transform: translateY(0);
+        transition: transform 0.1s;
+      }
+      .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(239, 1, 7, 0.2);
+      }
+      .btn-secondary {
+        background: linear-gradient(135deg, #023474 0%, #012a5e 100%);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid #023474;
+        color: #023474;
+      }
+
+      .btn-debug {
+        background: transparent;
+        border: 2px dashed #6c757d;
+        color: #6c757d;
+        font-size: 0.8rem;
+        padding: 8px 12px;
+        margin: 5px 0;
+      }
+      .btn-debug:hover {
+        background: #f8f9fa;
+        transform: none;
+        box-shadow: none;
+      }
+      .test-users {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+      .test-user-btn {
+        background: linear-gradient(135deg, #023474 0%, #012a5e 100%);
+        margin: 5px;
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+      .user-info {
+        text-align: left;
+        background: #f0f8ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .user-info h3 {
+        margin-top: 0;
+        color: #023474;
+      }
+      .nav-menu {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .nav-btn {
+        flex: 1;
+        min-width: 120px;
+        background: #e9ecef;
+        color: #495057;
+      }
+      .nav-btn.active {
+        background: linear-gradient(135deg, #023474 0%, #012a5e 100%);
+        color: white;
+      }
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+      .welcome-message {
+        font-size: 1.2rem;
+        color: #023474;
+        margin-bottom: 20px;
+      }
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .feature-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s;
+      }
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+      .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      .install-pwa {
+        background: linear-gradient(135deg, #023474 0%, #012a5e 100%);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        margin: 20px 0;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(2, 52, 116, 0.3);
+        cursor: pointer;
+      }
+      .branch-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s;
+        text-align: left;
+        display: block; /* Ensure it's displayed as block */
+        width: 100%; /* Ensure full width */
+        box-sizing: border-box; /* Include padding in width */
+      }
+      .branch-card:hover {
+        border-color: #023474;
+        background: #e9f4ff;
+      }
+      .branch-card.selected {
+        border-color: #023474;
+        background: #e9f4ff;
+        box-shadow: 0 4px 8px rgba(2, 52, 116, 0.2);
+      }
+      .branch-name {
+        font-weight: bold;
+        color: #023474;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+      .branch-address {
+        color: #6c757d;
+        margin: 5px 0;
+      }
+      .branch-contact {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 3px 0;
+      }
+      .user-role {
+        display: inline-block;
+        padding: 3px 8px;
+        background: #023474;
+        color: white;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin: 2px;
+      }
+      .role-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 15px 0;
+        width: 100%; /* Ensure full width */
+      }
+      .role-option {
+        flex: 1;
+        min-width: 120px;
+        padding: 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s;
+        display: flex; /* Use flex for better alignment */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box; /* Include padding in width */
+      }
+      .role-option:hover {
+        border-color: #023474;
+        background: #f0f8ff;
+      }
+      .role-option.selected {
+        border-color: #023474;
+        background: #e9f4ff;
+        box-shadow: 0 4px 8px rgba(2, 52, 116, 0.2);
+      }
+      .role-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+      }
+      .tab {
+        flex: 1;
+        padding: 15px;
+        background: #e9ecef;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+      }
+      .tab.active {
+        background: linear-gradient(135deg, #023474 0%, #012a5e 100%);
+        color: white;
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease-in-out; /* Add fade-in animation */
+        opacity: 0;
+      }
+      .tab-content.active {
+        display: block;
+        opacity: 1;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      #branchSelector {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      /* Ensure all form elements are visible */
+      .auth-section,
+      .form-group,
+      .role-selector,
+      .branch-card {
+        visibility: visible !important;
+      }
+
+      /* Add some debugging styles to see if elements are being hidden */
+      .debug-border {
+        border: 2px solid red !important;
+      }
+
+      @media (max-width: 768px) {
+        .content {
+          flex-direction: column;
+        }
+        .app-title {
+          font-size: 2rem;
+        }
+        .role-selector {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">⚽</div>
+        <h1 class="app-title">Футбольная школа "Арсенал"</h1>
+        <div class="subtitle">Мобильное приложение для управления школой</div>
+      </div>
+
+      <div class="content">
+        <div class="auth-section" id="authSection">
+          <div class="tabs">
+            <button class="tab active" onclick="showTab('login')">Вход</button>
+            <button class="tab" onclick="showTab('register')">Регистрация</button>
+          </div>
+
+          <div class="tab-content active" id="loginTab">
+            <h2>Вход в систему</h2>
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" id="email" placeholder="Введите email" />
+            </div>
+            <div class="form-group">
+              <label for="password">Пароль:</label>
+              <input type="password" id="password" placeholder="Введите пароль" />
+            </div>
+            <button class="btn" onclick="login()">Войти</button>
+
+            <!-- Debug button for testing -->
+            <button class="btn btn-debug" onclick="debugShowTab('login')" style="margin-top: 10px">
+              Debug: Show Login Tab
+            </button>
+            <button class="btn btn-debug" onclick="testButtonClick()" style="margin-top: 10px">
+              Тест кнопки
+            </button>
+          </div>
+
+          <div class="tab-content" id="registerTab">
+            <h2>Регистрация</h2>
+            <div class="form-group">
+              <label for="regName">Имя *:</label>
+              <input type="text" id="regName" placeholder="Введите имя" />
+            </div>
+            <div class="form-group">
+              <label for="regEmail">Email *:</label>
+              <input type="email" id="regEmail" placeholder="Введите email" />
+            </div>
+            <div class="form-group">
+              <label for="regPassword">Пароль *:</label>
+              <input type="password" id="regPassword" placeholder="Введите пароль" />
+            </div>
+            <div class="form-group">
+              <label>Роль *:</label>
+              <div class="role-selector">
+                <div class="role-option" onclick="selectRole('child')">
+                  <div class="role-icon">👶</div>
+                  <div>Ребенок</div>
+                  <div style="font-size: 0.8rem; color: #6c757d; margin-top: 5px">
+                    Регистрация учеников
+                  </div>
+                </div>
+                <div class="role-option" onclick="selectRole('parent')">
+                  <div class="role-icon">👨‍👩‍👧‍👦</div>
+                  <div>Родитель</div>
+                  <div style="font-size: 0.8rem; color: #6c757d; margin-top: 5px">
+                    Регистрация родителей
+                  </div>
+                </div>
+                <div class="role-option" onclick="selectRole('coach')">
+                  <div class="role-icon">🧑‍🏫</div>
+                  <div>Тренер</div>
+                  <div style="font-size: 0.8rem; color: #6c757d; margin-top: 5px">
+                    Регистрация через управляющего
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="regRole" value="child" />
+            </div>
+            <div class="form-group">
+              <label>Филиал *:</label>
+              <div id="branchSelector">
+                <div class="branch-card" onclick="selectBranch('zjulebino')">
+                  <div class="branch-name">Филиал Жулебино</div>
+                  <div class="branch-address">г. Москва, район Жулебино</div>
+                  <div class="branch-contact">Тел: +7 (495) 123-45-67</div>
+                  <div class="branch-contact">Email: zhulebino@arsenal-school.ru</div>
+                </div>
+                <div class="branch-card" onclick="selectBranch('dmitrievskogo')">
+                  <div class="branch-name">Филиал Ул. Дмитриевского</div>
+                  <div class="branch-address">г. Москва, район Дмитриевское</div>
+                  <div class="branch-contact">Тел: +7 (495) 234-56-78</div>
+                  <div class="branch-contact">Email: dmitrievskoe@arsenal-school.ru</div>
+                </div>
+              </div>
+              <input type="hidden" id="regBranch" value="" />
+            </div>
+            <button class="btn" onclick="register()">Зарегистрироваться</button>
+
+            <!-- Debug button for testing -->
+            <button
+              class="btn btn-debug"
+              onclick="debugShowTab('register')"
+              style="margin-top: 10px">
+              Debug: Show Registration Tab
+            </button>
+          </div>
+        </div>
+
+        <div class="dashboard" id="dashboard">
+          <div class="user-info">
+            <h3>Добро пожаловать, <span id="userName">Пользователь</span>!</h3>
+            <p>Email: <span id="userEmail">user@example.com</span></p>
+            <p>Роль: <span id="userRole">-</span></p>
+            <p>Филиал: <span class="branch-badge" id="userBranch">-</span></p>
+          </div>
+
+          <div class="nav-menu">
+            <button class="btn nav-btn active" onclick="showSection('home')">Главная</button>
+            <button class="btn nav-btn" onclick="showSection('schedule')">Расписание</button>
+            <button class="btn nav-btn" onclick="showSection('news')">Новости</button>
+            <button class="btn nav-btn" onclick="showSection('profile')">Профиль</button>
+            <button class="btn btn-secondary" onclick="logout()">Выйти</button>
+          </div>
+
+          <div class="section active" id="homeSection">
+            <h2>Добро пожаловать в футбольную школу "Арсенал"!</h2>
+            <p class="welcome-message">
+              Здесь вы можете управлять всеми аспектами работы футбольной школы.
+            </p>
+
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Мобильное приложение</h3>
+                <p>Установите наше приложение для Android</p>
+                <button class="install-pwa" id="installPwaButton">Установить приложение</button>
+                <div class="pwa-info">
+                  <h4>Как установить приложение:</h4>
+                  <ol>
+                    <li>Откройте этот сайт в браузере Chrome на вашем Android устройстве</li>
+                    <li>Нажмите на кнопку "Установить приложение"</li>
+                    <li>Следуйте инструкциям на экране</li>
+                  </ol>
+                  <p>
+                    После установки приложение будет работать как нативное приложение на вашем
+                    устройстве.
+                  </p>
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 10px">
+                  APK будет доступен в RuStore после тестирования
+                </p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Расписание</h3>
+                <p>Просмотр и управление расписанием тренировок</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Ученики</h3>
+                <p>Управление базой данных учеников</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📰</div>
+                <h3>Новости</h3>
+                <p>Публикация новостей и событий школы</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Аналитика</h3>
+                <p>Анализ прогресса и посещаемости</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" id="scheduleSection">
+            <h2>Расписание тренировок</h2>
+            <p>Здесь будет отображаться расписание тренировок.</p>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px">
+              <h3>Понедельник - 16:00</h3>
+              <p>Группа: Юниоры (8-10 лет)</p>
+              <p>Тренер: Иванов И.И.</p>
+              <p>Филиал: <span id="scheduleBranch">Жулебино</span></p>
+            </div>
+          </div>
+
+          <div class="section" id="newsSection">
+            <h2>Новости школы</h2>
+            <p>Здесь будут отображаться последние новости школы.</p>
+            <div
+              style="
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+                text-align: left;
+              ">
+              <h3>🏆 Победа на турнире!</h3>
+              <p>Наши юные футболисты одержали победу в региональном турнире!</p>
+              <small>Опубликовано: 10 сентября 2025</small>
+            </div>
+          </div>
+
+          <div class="section" id="profileSection">
+            <h2>Профиль пользователя</h2>
+            <div
+              style="
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+                text-align: left;
+              ">
+              <h3>Личная информация</h3>
+              <p><strong>Имя:</strong> <span id="profileName">-</span></p>
+              <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
+              <p><strong>Роль:</strong> <span id="profileRole">-</span></p>
+              <p><strong>Филиал:</strong> <span id="profileBranch">-</span></p>
+            <!-- Улучшенная информационная панель для управляющих -->
+            <div id="managementAccess" style="display: none; margin-top: 20px; text-align: center;">
+              <div style="background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%); padding: 20px; border-radius: 12px; border: 2px solid #007bff; margin-bottom: 15px;">
+                <h4 style="color: #023474; margin-top: 0;">🛠️ Панель управления</h4>
+                <p style="margin: 10px 0; color: #495057;">
+                  Полный доступ к управлению всеми аспектами футбольной школы
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 15px 0; font-size: 0.9rem; color: #6c757d;">
+                  <div>👥 Пользователи</div>
+                  <div>🏢 Филиалы</div>
+                  <div>🏃 Тренеры</div>
+                  <div>🎓 Ученики</div>
+                  <div>📅 Расписание</div>
+                  <div>👨‍👩‍👧 Родители</div>
+                </div>
+                <button class="btn" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); max-width: 280px; font-size: 1.1rem; padding: 16px 24px;" onclick="showManagementPanel()">
+                  🛠️ Открыть панель управления
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Модальное окно панели управления -->
+    <div id="managementModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Панель управления</h2>
+          <button class="close" onclick="closeManagementModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="management-tabs">
+            <button class="nav-btn active" onclick="showManagementTab('users')">Пользователи</button>
+            <button class="nav-btn" onclick="showManagementTab('analytics')">Аналитика</button>
+            <button class="nav-btn" onclick="showManagementTab('branches')">Филиалы</button>
+            <button class="nav-btn" onclick="showManagementTab('coaches')">Тренеры</button>
+            <button class="nav-btn" onclick="showManagementTab('students')">Ученики</button>
+            <button class="nav-btn" onclick="showManagementTab('schedule')">Расписание</button>
+            <button class="nav-btn" onclick="showManagementTab('parents')">Родители</button>
+          </div>
+          <div id="managementContent">
+            <!-- Содержимое вкладок будет загружаться здесь -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Простая функция для отладки кнопок
+      function testButtonClick() {
+        console.log('Кнопка работает!');
+        alert('Кнопка работает!');
+      }
+      
+      // Проверяем загрузку страницы
+      console.log('JavaScript загружается...');
+      
+      // Добавляем обработчик событий после загрузки DOM
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM загружен!');
+        console.log('Функция showTab существует:', typeof showTab);
+        console.log('Функция selectRole существует:', typeof selectRole);
+        console.log('Функция selectBranch существует:', typeof selectBranch);
+        
+        // Проверяем наличие основных элементов
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        console.log('loginTab найден:', !!loginTab);
+        console.log('registerTab найден:', !!registerTab);
+        
+        // Инициализируем по умолчанию вкладку входа как активную
+        if (loginTab) {
+          showTab('login');
+        }
+      });
+      
+      // Филиалы
+      const branches = {
+        zjulebino: 'Филиал Жулебино',
+        dmitrievskogo: 'Филиал Ул. Дмитриевского',
+      };
+
+      // Тестовые пользователи
+      const testUsers = {
+        'admin1@gs.com': {
+          id: '1',
+          name: 'Иванов Иван',
+          role: 'Ребенок',
+          email: 'admin1@gs.com',
+          branch: 'zjulebino',
+        },
+        'admin2@gs.com': {
+          id: '2',
+          name: 'Петров Петр',
+          role: 'Родитель',
+          email: 'admin2@gs.com',
+          branch: 'zjulebino',
+        },
+        'admin3@gs.com': {
+          id: '3',
+          name: 'Сидоров Сидор',
+          role: 'Управляющий',
+          email: 'admin3@gs.com',
+          branch: 'zjulebino',
+        },
+        'admin4@gs.com': {
+          id: '4',
+          name: 'Козлов Константин',
+          role: 'Тренер',
+          email: 'admin4@gs.com',
+          branch: 'zjulebino',
+        },
+        'admin5@gs.com': {
+          id: '5',
+          name: 'Смирнов Сергей',
+          role: 'SMM-менеджер',
+          email: 'admin5@gs.com',
+          branch: 'zjulebino',
+        },
+      };
+
+      // Зарегистрированные пользователи
+      let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || {};
+
+      // Функция переключения вкладок
+      function showTab(tabName) {
+        console.log('Showing tab:', tabName);
+
+        // Скрываем все вкладки
+        document.querySelectorAll('.tab-content').forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        // Убираем активный класс у всех кнопок
+        document.querySelectorAll('.tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        // Показываем нужную вкладку
+        const targetTab = document.getElementById(tabName + 'Tab');
+        if (targetTab) {
+          targetTab.classList.add('active');
+        } else {
+          console.error('Tab not found:', tabName + 'Tab');
+        }
+
+        // Добавляем активный класс к нажатой кнопке
+        // Исправляем ошибку с event.target
+        const activeTab = document.querySelector(`.tab[onclick="showTab('${tabName}')"]`);
+        if (activeTab) {
+          activeTab.classList.add('active');
+        }
+      }
+
+      // Функция входа
+      function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        console.log('Login attempt with:', { email, password });
+
+        // Улучшенная валидация входа
+        if (!email.trim() || !password.trim()) {
+          alert('Пожалуйста, заполните все поля');
+          return;
+        }
+        
+        // Проверка email формата
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          alert('Пожалуйста, введите корректный email адрес');
+          return;
+        }
+
+        // Проверяем тестовых пользователей
+        if (testUsers[email]) {
+          console.log('Found test user, logging in');
+          loginUser(testUsers[email]);
+          return;
+        }
+
+        // Проверяем зарегистрированных пользователей
+        if (registeredUsers[email]) {
+          console.log('Found registered user, logging in');
+          // Для демонстрации принимаем любой пароль
+          loginUser(registeredUsers[email]);
+          return;
+        }
+
+        alert(`Неверные данные для входа.
+
+Попробуйте:
+- admin3@gs.com / admin (Менеджер)
+- admin1@gs.com / admin (Ребенок)
+- admin2@gs.com / admin (Родитель)
+
+Или создайте новую учетную запись.`);
+      }
+      
+      // Make sure the function is globally accessible
+      window.login = login;
+
+      // Функция входа с тестовым пользователем
+      function testLogin(email, password) {
+        console.log('Test login with:', { email, password });
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = password;
+        login();
+      }
+      
+      // Make sure the function is globally accessible
+      window.testLogin = testLogin;
+
+      // Функция выбора роли
+      function selectRole(role) {
+        console.log('Selecting role:', role);
+
+        // Убираем выделение со всех ролей
+        document.querySelectorAll('.role-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+
+        // Добавляем выделение к выбранной роли
+        // Исправляем ошибку с event.currentTarget
+        const selectedOption = document.querySelector(
+          `.role-option[onclick="selectRole('${role}')"]`
+        );
+        if (selectedOption) {
+          selectedOption.classList.add('selected');
+          console.log('Role selected:', role);
+        } else {
+          console.error('Role option not found:', role);
+        }
+
+        // Устанавливаем значение в скрытое поле
+        const roleField = document.getElementById('regRole');
+        if (roleField) {
+          roleField.value = role;
+          console.log('Role field updated:', roleField.value);
+        }
+      }
+
+      // Функция выбора филиала
+      function selectBranch(branchId) {
+        console.log('Selecting branch:', branchId);
+
+        // Убираем выделение со всех филиалов
+        document.querySelectorAll('.branch-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+
+        // Добавляем выделение к выбранному филиалу
+        // Исправляем ошибку с event.currentTarget
+        const selectedCard = document.querySelector(
+          `.branch-card[onclick="selectBranch('${branchId}')"]`
+        );
+        if (selectedCard) {
+          selectedCard.classList.add('selected');
+          console.log('Branch selected:', branchId);
+        } else {
+          console.error('Branch card not found:', branchId);
+        }
+
+        // Устанавливаем значение в скрытое поле
+        const branchField = document.getElementById('regBranch');
+        if (branchField) {
+          branchField.value = branchId;
+          console.log('Branch field updated:', branchField.value);
+        }
+      }
+
+      // Функция регистрации
+      function register() {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const role = document.getElementById('regRole').value;
+        const branch = document.getElementById('regBranch').value;
+
+        console.log('Registration attempt:', { name, email, password, role, branch });
+
+        // Улучшенная валидация форм
+        if (!name.trim() || !email.trim() || !password.trim()) {
+          alert('Пожалуйста, заполните все обязательные поля (отмечены *)');
+          return;
+        }
+        
+        // Проверка email формата
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          alert('Пожалуйста, введите корректный email адрес');
+          return;
+        }
+        
+        // Проверка пароля
+        if (password.length < 4) {
+          alert('Пароль должен содержать минимум 4 символа');
+          return;
+        }
+
+        if (!role || role === '') {
+          alert('Пожалуйста, выберите роль');
+          return;
+        }
+
+        if (!branch || branch === '') {
+          alert('Пожалуйста, выберите филиал');
+          return;
+        }
+
+        // Проверяем, что email уникален
+        if (testUsers[email] || registeredUsers[email]) {
+          alert('Пользователь с таким email уже существует');
+          return;
+        }
+
+        // Создаем нового пользователя
+        const newUser = {
+          id: Date.now().toString(),
+          name: name,
+          email: email,
+          role: getRoleName(role),
+          branch: branch,
+        };
+
+        console.log('Creating new user:', newUser);
+
+        // Сохраняем пользователя
+        registeredUsers[email] = newUser;
+        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
+        alert(`Пользователь создан!
+
+Начальная информация:
+Имя: ${name}
+Email: ${email}
+Роль: ${roleNames[role]}
+Пароль: admin
+
+Теперь вы можете войти с этими данными.`);
+        
+        // Переключаемся на вкладку входа и заполняем email
+        showTab('login');
+        setTimeout(() => {
+          document.getElementById('email').value = email;
+          document.getElementById('password').focus();
+        }, 300);
+
+        // Очищаем форму регистрации
+        document.getElementById('regName').value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPassword').value = '';
+
+        // Сбрасываем выбор роли и филиала
+        document.querySelectorAll('.role-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+        document.querySelectorAll('.branch-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        document.getElementById('regRole').value = 'child';
+        document.getElementById('regBranch').value = '';
+      }
+      
+      // Make sure the function is globally accessible
+      window.register = register;
+
+      // Функция входа пользователя
+      function loginUser(user) {
+        // Улучшенное отображение сообщения об успешном входе
+        console.log('Пользователь вошел в систему:', user.name);
+        
+        // Показываем приветственное сообщение
+        setTimeout(() => {
+          alert(`Добро пожаловать, ${user.name}!
+
+Вы успешно вошли в систему с ролью: ${user.role}`);
+        }, 500);
+
+        // Скрываем форму входа и показываем панель управления
+        const authSection = document.getElementById('authSection');
+        const dashboard = document.getElementById('dashboard');
+
+        if (authSection && dashboard) {
+          authSection.style.display = 'none';
+          dashboard.style.display = 'block';
+        } else {
+          console.error('Could not find authSection or dashboard elements');
+        }
+
+        // Заполняем информацию о пользователе
+        if (document.getElementById('userName')) {
+          document.getElementById('userName').textContent = user.name;
+        }
+        if (document.getElementById('userEmail')) {
+          document.getElementById('userEmail').textContent = user.email;
+        }
+        if (document.getElementById('userRole')) {
+          document.getElementById('userRole').textContent = user.role;
+        }
+        if (document.getElementById('userBranch')) {
+          document.getElementById('userBranch').textContent = branches[user.branch] || user.branch;
+        }
+
+        // Заполняем профиль
+        if (document.getElementById('profileName')) {
+          document.getElementById('profileName').textContent = user.name;
+        }
+        if (document.getElementById('profileEmail')) {
+          document.getElementById('profileEmail').textContent = user.email;
+        }
+        if (document.getElementById('profileRole')) {
+          document.getElementById('profileRole').textContent = user.role;
+        }
+
+        // Заполняем информацию о филиале в профиле
+        const branchName = branches[user.branch] || user.branch;
+        if (document.getElementById('profileBranch')) {
+          document.getElementById('profileBranch').textContent = branchName;
+        }
+
+        // Дополнительная информация о филиале
+        if (user.branch === 'zjulebino') {
+          if (document.getElementById('profileBranchName')) {
+            document.getElementById('profileBranchName').textContent = 'Филиал Жулебино';
+          }
+          if (document.getElementById('profileBranchAddress')) {
+            document.getElementById('profileBranchAddress').textContent =
+              'Адрес: г. Москва, район Жулебино';
+          }
+          if (document.getElementById('profileBranchContact')) {
+            document.getElementById('profileBranchContact').textContent =
+              'Контакты: Тел: +7 (495) 123-45-67, Email: zhulebino@arsenal-school.ru';
+          }
+        } else if (user.branch === 'dmitrievskogo') {
+          if (document.getElementById('profileBranchName')) {
+            document.getElementById('profileBranchName').textContent = 'Филиал Ул. Дмитриевского';
+          }
+          if (document.getElementById('profileBranchAddress')) {
+            document.getElementById('profileBranchAddress').textContent =
+              'Адрес: г. Москва, район Дмитриевское';
+          }
+          if (document.getElementById('profileBranchContact')) {
+            document.getElementById('profileBranchContact').textContent =
+              'Контакты: Тел: +7 (495) 234-56-78, Email: dmitrievskoe@arsenal-school.ru';
+          }
+        } else {
+          if (document.getElementById('profileBranchName')) {
+            document.getElementById('profileBranchName').textContent = branchName;
+          }
+          if (document.getElementById('profileBranchAddress')) {
+            document.getElementById('profileBranchAddress').textContent = 'Адрес: Не указан';
+          }
+          if (document.getElementById('profileBranchContact')) {
+            document.getElementById('profileBranchContact').textContent = 'Контакты: Не указаны';
+          }
+        }
+
+        // Показываем информацию об управлении филиалами для тренеров и управляющих
+        const branchManagementInfo = document.getElementById('branchManagementInfo');
+        if (branchManagementInfo && (user.role === 'Тренер' || user.role === 'Управляющий')) {
+          branchManagementInfo.style.display = 'block';
+
+          // Для управляющего добавляем дополнительную информацию
+          if (user.role === 'Управляющий') {
+            // Удаляем существующий элемент, если он есть
+            let existingManagementDetails = document.getElementById('managementDetails');
+            if (existingManagementDetails) {
+              existingManagementDetails.remove();
+            }
+            
+            // Создаем элемент с информацией о филиалах и учениках
+            let managementDetails = document.createElement('div');
+            managementDetails.id = 'managementDetails';
+            managementDetails.style.marginTop = '20px';
+            managementDetails.style.padding = '15px';
+            managementDetails.style.backgroundColor = '#e8f4f8';
+            managementDetails.style.borderRadius = '8px';
+            managementDetails.style.border = '1px solid #bee5eb';
+
+            managementDetails.innerHTML = `
+              <h4>Информация для управляющего</h4>
+              <p><strong>Ваши филиалы:</strong></p>
+              <ul>
+                <li>Филиал Жулебино
+                  <ul>
+                    <li>Ученики: Воропаев Макар, Воропаева Варвара</li>
+                    <li>Расписание: Вт/Чт/Сб 18:00-19:00</li>
+                  </ul>
+                </li>
+                <li>Филиал Ул. Дмитриевского
+                  <ul>
+                    <li>Ученики: Гудков Сергей, Ачин Максим</li>
+                    <li>Расписание: Пн/Ср/Пт 17:30-18:30</li>
+                  </ul>
+                </li>
+              </ul>
+              <p><strong>Функции управления:</strong></p>
+              <ul>
+                <li>Создание/удаление филиалов</li>
+                <li>Регистрация/удаление тренеров</li>
+                <li>Создание/удаление учеников и родителей</li>
+                <li>Управление расписанием занятий</li>
+                <li>Назначение тренеров на занятия</li>
+              </ul>
+              <button class="btn btn-secondary" onclick="showManagementPanel()" style="margin-top: 10px;">
+                Открыть панель управления
+              </button>
+            `;
+
+            // Добавляем элемент после branchManagementInfo
+            branchManagementInfo.parentNode.insertBefore(
+              managementDetails,
+              branchManagementInfo.nextSibling
+            );
+          }
+        }
+
+        // Устанавливаем филиал в расписании
+        const scheduleBranch = document.getElementById('scheduleBranch');
+        if (scheduleBranch) {
+          scheduleBranch.textContent = branches[user.branch] || user.branch;
+        }
+
+        // Отображаем специальные функции для управляющих
+        const managementAccess = document.getElementById('managementAccess');
+        
+        if (user.role === 'Управляющий' && managementAccess) {
+          managementAccess.style.display = 'block';
+          console.log('Отображаем панель управления для менеджера');
+        } else if (managementAccess) {
+          managementAccess.style.display = 'none';
+        }
+        
+        // Сохраняем информацию о текущем пользователе
+        localStorage.setItem('currentUser', JSON.stringify(user));
+
+        console.log('User login completed');
+      }
+
+      // Функция выхода
+      function logout() {
+        console.log('Logging out user');
+
+        // Показываем форму входа и скрываем панель управления
+        const authSection = document.getElementById('authSection');
+        const dashboard = document.getElementById('dashboard');
+
+        if (authSection && dashboard) {
+          authSection.style.display = 'block';
+          dashboard.style.display = 'none';
+        } else {
+          console.error('Could not find authSection or dashboard elements');
+        }
+
+        // Очищаем поля ввода
+        const emailField = document.getElementById('email');
+        const passwordField = document.getElementById('password');
+
+        if (emailField) emailField.value = '';
+        if (passwordField) passwordField.value = '';
+
+        // Удаляем информацию о текущем пользователе
+        localStorage.removeItem('currentUser');
+
+        console.log('User logged out');
+      }
+
+      // Функция переключения разделов
+      function showSection(sectionId) {
+        console.log('Showing section:', sectionId);
+
+        // Скрываем все разделы
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+          section.classList.remove('active');
+        });
+
+        // Убираем активный класс у всех кнопок
+        const navButtons = document.querySelectorAll('.nav-btn');
+        navButtons.forEach(button => {
+          button.classList.remove('active');
+        });
+
+        // Показываем нужный раздел
+        const targetSection = document.getElementById(sectionId + 'Section');
+        if (targetSection) {
+          targetSection.classList.add('active');
+        } else {
+          console.error('Section not found:', sectionId + 'Section');
+        }
+
+        // Добавляем активный класс к нажатой кнопке
+        // Исправляем ошибку с event.target
+        const activeButton = document.querySelector(
+          `.nav-btn[onclick="showSection('${sectionId}')"]`
+        );
+        if (activeButton) {
+          activeButton.classList.add('active');
+        }
+      }
+
+      // Функция для получения названия роли
+      function getRoleName(roleKey) {
+        const roles = {
+          child: 'Ребенок',
+          parent: 'Родитель',
+          coach: 'Тренер',
+          manager: 'Управляющий',
+          smm: 'SMM-менеджер',
+        };
+        return roles[roleKey] || roleKey;
+      }
+
+      // Функция для отображения информации о APK
+      function showApkInfo() {
+        alert(
+          'APK файл будет доступен для скачивания после публикации в RuStore. На данный момент приложение находится в стадии тестирования.'
+        );
+      }
+
+      // Функция для отображения панели управления (заглушка)
+      function showManagementPanel() {
+        const modal = document.getElementById('managementModal');
+        if (modal) {
+          modal.style.display = 'block';
+          // Показываем вкладку пользователей по умолчанию
+          showManagementTab('users');
+        }
+      }
+      
+      // Функция для закрытия модального окна
+      function closeManagementModal() {
+        const modal = document.getElementById('managementModal');
+        if (modal) {
+          modal.style.display = 'none';
+        }
+      }
+      
+      // Закрытие модального окна при клике вне его области
+      window.onclick = function(event) {
+        const modal = document.getElementById('managementModal');
+        if (event.target === modal) {
+          closeManagementModal();
+        }
+      }
+      
+      // Функция для переключения вкладок в панели управления
+      function showManagementTab(tabName) {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        // Убираем активный класс у всех кнопок
+        document.querySelectorAll('#managementModal .nav-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Добавляем активный класс к нажатой кнопке
+        event.target.classList.add('active');
+        
+        // Отображаем содержимое вкладки
+        switch(tabName) {
+          case 'users':
+            content.innerHTML = `
+              <h3>Управление пользователями</h3>
+              
+              <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffeaa7;">
+                <h4>Создание пользователя с кастомными данными</h4>
+                <form id="customUserForm" style="margin-top: 15px;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: bold;">ФИО:</label>
+                      <input type="text" id="customUserFullName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder="Введите полное ФИО">
+                    </div>
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                      <input type="email" id="customUserEmail" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder="Введите email">
+                    </div>
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Дата рождения:</label>
+                      <input type="date" id="customUserBirthDate" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Роль:</label>
+                      <select id="customUserRole" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="child">Ребенок</option>
+                        <option value="parent">Родитель</option>
+                        <option value="coach">Тренер</option>
+                        <option value="manager">Управляющий</option>
+                        <option value="smm">SMM-менеджер</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Филиал:</label>
+                    <select id="customUserBranch" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                      <option value="zjulebino">Филиал Жулебино</option>
+                      <option value="dmitrievskogo">Филиал Ул. Дмитриевского</option>
+                    </select>
+                  </div>
+                  <button type="button" class="btn" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); margin-top: 10px;" onclick="createCustomUser()">
+                    Создать пользователя
+                  </button>
+                </form>
+              </div>
+              
+              <div style="background: #e8f4f8; padding: 20px; border-radius: 8px; border: 1px solid #bee5eb;">
+                <h4>Список всех пользователей</h4>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                  <thead>
+                    <tr style="background: #023474; color: white;">
+                      <th style="padding: 10px; text-align: left;">ФИО</th>
+                      <th style="padding: 10px; text-align: left;">Email</th>
+                      <th style="padding: 10px; text-align: left;">Роль</th>
+                      <th style="padding: 10px; text-align: left;">Филиал</th>
+                      <th style="padding: 10px; text-align: left;">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userTableBody">
+                    <!-- Пользователи будут загружены динамически -->
+                  </tbody>
+                </table>
+                <button class="btn btn-secondary" style="margin-top: 15px;" onclick="refreshUserTable()">Обновить список</button>
+              </div>
+            `;
+            // Загружаем список пользователей
+            refreshUserTable();
+            break;
+            
+          case 'analytics':
+            content.innerHTML = `
+              <h3>Аналитика</h3>
+              
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                  <h4 style="margin: 0; font-size: 2.5rem;">85</h4>
+                  <p style="margin: 10px 0 0 0; font-size: 1.1rem;">Всего учеников</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                  <h4 style="margin: 0; font-size: 2.5rem;">4</h4>
+                  <p style="margin: 10px 0 0 0; font-size: 1.1rem;">Активных тренера</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #fd7e14 0%, #e85a00 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                  <h4 style="margin: 0; font-size: 2.5rem;">2</h4>
+                  <p style="margin: 10px 0 0 0; font-size: 1.1rem;">Филиала</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                  <h4 style="margin: 0; font-size: 2.5rem;">92%</h4>
+                  <p style="margin: 10px 0 0 0; font-size: 1.1rem;">Посещаемость</p>
+                </div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+                  <h4>Посещаемость по дням недели</h4>
+                  <div style="margin-top: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                      <span>Понедельник</span>
+                      <span style="color: #28a745; font-weight: bold;">95%</span>
+                    </div>
+                    <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 15px;">
+                      <div style="background: #28a745; height: 100%; width: 95%; border-radius: 4px;"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                      <span>Среда</span>
+                      <span style="color: #28a745; font-weight: bold;">88%</span>
+                    </div>
+                    <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 15px;">
+                      <div style="background: #28a745; height: 100%; width: 88%; border-radius: 4px;"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                      <span>Пятница</span>
+                      <span style="color: #28a745; font-weight: bold;">92%</span>
+                    </div>
+                    <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 15px;">
+                      <div style="background: #28a745; height: 100%; width: 92%; border-radius: 4px;"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+                  <h4>Активность по филиалам</h4>
+                  <div style="margin-top: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: white; border-radius: 5px;">
+                      <div>
+                        <strong>Жулебино</strong><br>
+                        <small style="color: #6c757d;">42 ученика</small>
+                      </div>
+                      <span style="color: #007bff; font-weight: bold; font-size: 1.2rem;">94%</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: white; border-radius: 5px;">
+                      <div>
+                        <strong>Дмитриевского</strong><br>
+                        <small style="color: #6c757d;">43 ученика</small>
+                      </div>
+                      <span style="color: #007bff; font-weight: bold; font-size: 1.2rem;">90%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+                <h4>Последние действия</h4>
+                <div style="margin-top: 15px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #dee2e6;">
+                    <div>
+                      <strong>Новый ученик:</strong> Петров Иван Сергеевич
+                      <br><small style="color: #6c757d;">Филиал: Жулебино</small>
+                    </div>
+                    <small style="color: #6c757d;">2 часа назад</small>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #dee2e6;">
+                    <div>
+                      <strong>Изменение расписания:</strong> Добавлена тренировка
+                      <br><small style="color: #6c757d;">Суббота 19:00-20:00, тренер Захар</small>
+                    </div>
+                    <small style="color: #6c757d;">5 часов назад</small>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                    <div>
+                      <strong>Новый родитель:</strong> Сидорова Анна Петровна
+                      <br><small style="color: #6c757d;">Филиал: Дмитриевского</small>
+                    </div>
+                    <small style="color: #6c757d;">1 день назад</small>
+                  </div>
+                </div>
+              </div>
+            `;
+            break;
+            
+          case 'branches':
+            content.innerHTML = `
+              <h3>Управление филиалами</h3>
+              <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                  <h4>Филиал Жулебино</h4>
+                  <p><strong>Адрес:</strong> г. Москва, район Жулебино</p>
+                  <p><strong>Контакты:</strong> Тел: +7 (495) 123-45-67, Email: zhulebino@arsenal-school.ru</p>
+                  <p><strong>Расписание:</strong> Вт/Чт/Сб 18:00-19:00</p>
+                  <p><strong>Ученики:</strong> Воропаев Макар, Воропаева Варвара</p>
+                  <button class="btn btn-secondary" style="margin-top: 10px;" onclick="editBranch('zhulebino')">Редактировать</button>
+                </div>
+                <div style="flex: 1; min-width: 300px; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                  <h4>Филиал Ул. Дмитриевского</h4>
+                  <p><strong>Адрес:</strong> г. Москва, район Дмитриевское</p>
+                  <p><strong>Контакты:</strong> Тел: +7 (495) 234-56-78, Email: dmitrievskoe@arsenal-school.ru</p>
+                  <p><strong>Расписание:</strong> Пн/Ср/Пт 17:30-18:30</p>
+                  <p><strong>Ученики:</strong> Гудков Сергей, Ачин Максим</p>
+                  <button class="btn btn-secondary" style="margin-top: 10px;" onclick="editBranch('dmitrievskoe')">Редактировать</button>
+                </div>
+              </div>
+              <div style="margin-top: 20px;">
+                <button class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);" onclick="addBranch()">Добавить новый филиал</button>
+              </div>
+            `;
+            break;
+            
+          case 'coaches':
+            content.innerHTML = `
+              <h3>Управление тренерами</h3>
+              <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h4>Зарегистрированные тренеры</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="background: #023474; color: white;">
+                      <th style="padding: 10px; text-align: left;">Имя</th>
+                      <th style="padding: 10px; text-align: left;">Email</th>
+                      <th style="padding: 10px; text-align: left;">Филиал</th>
+                      <th style="padding: 10px; text-align: left;">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Захар (Тренер)</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">zakhar@arsenal-school.ru</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Жулебино, Дмитриевского</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editCoach('zakhar')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteCoach('zakhar')">Удалить</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); margin-top: 15px;" onclick="addCoach()">Добавить нового тренера</button>
+              </div>
+            `;
+            break;
+            
+          case 'students':
+            content.innerHTML = `
+              <h3>Управление учениками</h3>
+              <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h4>Ученики филиала Жулебино</h4>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                  <thead>
+                    <tr style="background: #023474; color: white;">
+                      <th style="padding: 10px; text-align: left;">Имя</th>
+                      <th style="padding: 10px; text-align: left;">Дата рождения</th>
+                      <th style="padding: 10px; text-align: left;">Родитель</th>
+                      <th style="padding: 10px; text-align: left;">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Воропаев Макар Андреевич</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">23.04.2015</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Воропаев Андрей</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editStudent('makar')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteStudent('makar')">Удалить</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Воропаева Варвара Андреевна</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">23.04.2015</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Воропаев Андрей</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editStudent('varvara')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteStudent('varvara')">Удалить</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <h4>Ученики филиала Дмитриевского</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="background: #023474; color: white;">
+                      <th style="padding: 10px; text-align: left;">Имя</th>
+                      <th style="padding: 10px; text-align: left;">Дата рождения</th>
+                      <th style="padding: 10px; text-align: left;">Родитель</th>
+                      <th style="padding: 10px; text-align: left;">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Гудков Сергей Дмитриевич</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">05.03.2014</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Гудков Дмитрий</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editStudent('sergey')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteStudent('sergey')">Удалить</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Ачин Максим Сергеевич</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">18.02.2014</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Ачин Сергей</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editStudent('maksim')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteStudent('maksim')">Удалить</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); margin-top: 15px;" onclick="addStudent()">Добавить нового ученика</button>
+              </div>
+            `;
+            break;
+            
+          case 'schedule':
+            content.innerHTML = `
+              <h3>Управление расписанием</h3>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+                  <h4>📅 Календарь тренировок</h4>
+                  <div id="trainingCalendar" style="margin-top: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; margin-bottom: 10px;">
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Пн</div>
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Вт</div>
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Ср</div>
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Чт</div>
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Пт</div>
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Сб</div>
+                      <div style="font-weight: bold; padding: 10px; background: #023474; color: white; border-radius: 4px;">Вс</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;">
+                      <div style="padding: 15px; background: #e9ecef; border-radius: 4px; cursor: pointer; position: relative;" onclick="showDaySchedule('monday')">
+                        <strong>13</strong>
+                        <div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: #28a745; border-radius: 50%;"></div>
+                      </div>
+                      <div style="padding: 15px; background: #e9ecef; border-radius: 4px; cursor: pointer; position: relative;" onclick="showDaySchedule('tuesday')">
+                        <strong>14</strong>
+                        <div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: #28a745; border-radius: 50%;"></div>
+                      </div>
+                      <div style="padding: 15px; background: #e9ecef; border-radius: 4px; cursor: pointer; position: relative;" onclick="showDaySchedule('wednesday')">
+                        <strong>15</strong>
+                        <div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: #28a745; border-radius: 50%;"></div>
+                      </div>
+                      <div style="padding: 15px; background: #e9ecef; border-radius: 4px; cursor: pointer;" onclick="showDaySchedule('thursday')">
+                        <strong>16</strong>
+                      </div>
+                      <div style="padding: 15px; background: #e9ecef; border-radius: 4px; cursor: pointer; position: relative;" onclick="showDaySchedule('friday')">
+                        <strong>17</strong>
+                        <div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: #28a745; border-radius: 50%;"></div>
+                      </div>
+                      <div style="padding: 15px; background: #ffc107; border-radius: 4px; cursor: pointer; position: relative;" onclick="showDaySchedule('saturday')">
+                        <strong>18</strong>
+                        <div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: #dc3545; border-radius: 50%;"></div>
+                      </div>
+                      <div style="padding: 15px; background: #e9ecef; border-radius: 4px; cursor: pointer;" onclick="showDaySchedule('sunday')">
+                        <strong>19</strong>
+                      </div>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+                      <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 8px; height: 8px; background: #28a745; border-radius: 50%;"></div>
+                        <span>Есть тренировки</span>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 8px; height: 8px; background: #dc3545; border-radius: 50%;"></div>
+                        <span>Перенос тренировки</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="margin-top: 20px;">
+                    <button class="btn" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); width: 100%;" onclick="addScheduleItem()">
+                      ➕ Добавить новую тренировку
+                    </button>
+                  </div>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+                  <h4>📄 Текущее расписание</h4>
+                  <div id="currentScheduleView">
+                    <div style="margin-bottom: 15px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #007bff;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <strong>Понедельник 18:00-19:00</strong><br>
+                          <span style="color: #6c757d;">Группа: Новички (6-8 лет)</span><br>
+                          <span style="color: #28a745; font-weight: bold;">Тренер: Захар</span><br>
+                          <span style="color: #fd7e14;">Филиал: Жулебино</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                          <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editScheduleItem('monday_1800')">Редактировать</button>
+                          <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteScheduleItem('monday_1800')">Удалить</button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #28a745;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <strong>Среда 18:00-19:00</strong><br>
+                          <span style="color: #6c757d;">Группа: Продвинутые (9-12 лет)</span><br>
+                          <span style="color: #28a745; font-weight: bold;">Тренер: Захар</span><br>
+                          <span style="color: #fd7e14;">Филиал: Жулебино</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                          <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editScheduleItem('wednesday_1800')">Редактировать</button>
+                          <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteScheduleItem('wednesday_1800')">Удалить</button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #6f42c1;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <strong>Пятница 17:30-18:30</strong><br>
+                          <span style="color: #6c757d;">Группа: Младшая группа (4-6 лет)</span><br>
+                          <span style="color: #28a745; font-weight: bold;">Тренер: Захар</span><br>
+                          <span style="color: #fd7e14;">Филиал: Дмитриевского</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                          <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editScheduleItem('friday_1730')">Редактировать</button>
+                          <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteScheduleItem('friday_1730')">Удалить</button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <strong>Суббота 10:00-11:00 (ПЕРЕНОС)</strong><br>
+                          <span style="color: #856404;">Группа: Спарринги (12+ лет)</span><br>
+                          <span style="color: #28a745; font-weight: bold;">Тренер: Захар</span><br>
+                          <span style="color: #fd7e14;">Филиал: Жулебино</span><br>
+                          <small style="color: #dc3545; font-weight: bold;">Причина: Народный праздник</small>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                          <button class="btn" style="background: #28a745; padding: 5px 10px; font-size: 0.8rem;" onclick="confirmScheduleTransfer('saturday_1000')">Подтвердить перенос</button>
+                          <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="cancelScheduleTransfer('saturday_1000')">Отменить</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div style="background: #e8f4f8; padding: 20px; border-radius: 8px; border: 1px solid #bee5eb;">
+                <h4>🚀 Быстрые действия</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                  <button class="btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);" onclick="bulkScheduleAction('add_week')">
+                    📅 Добавить всю неделю
+                  </button>
+                  <button class="btn" style="background: linear-gradient(135deg, #fd7e14 0%, #e85a00 100%);" onclick="bulkScheduleAction('copy_week')">
+                    📋 Копировать неделю
+                  </button>
+                  <button class="btn" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);" onclick="bulkScheduleAction('assign_coaches')">
+                    👥 Назначить тренеров
+                  </button>
+                  <button class="btn" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);" onclick="bulkScheduleAction('cancel_day')">
+                    ❌ Отменить день
+                  </button>
+                </div>
+              </div>
+            `;
+            break;
+            
+          case 'parents':
+            content.innerHTML = `
+              <h3>Управление родителями</h3>
+              <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h4>Зарегистрированные родители</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="background: #023474; color: white;">
+                      <th style="padding: 10px; text-align: left;">Имя родителя</th>
+                      <th style="padding: 10px; text-align: left;">Email</th>
+                      <th style="padding: 10px; text-align: left;">Телефон</th>
+                      <th style="padding: 10px; text-align: left;">Дети</th>
+                      <th style="padding: 10px; text-align: left;">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Воропаев Андрей</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">voropaev@example.com</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">+7 (900) 123-45-67</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Воропаев Макар, Воропаева Варвара</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editParent('voropaev')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteParent('voropaev')">Удалить</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Гудков Дмитрий</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">gudkov@example.com</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">+7 (900) 234-56-78</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Гудков Сергей</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editParent('gudkov')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteParent('gudkov')">Удалить</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Аchin Сергей</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">achin@example.com</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">+7 (900) 345-67-89</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">Ачин Максим</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editParent('achin')">Редактировать</button>
+                        <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem;" onclick="deleteParent('achin')">Удалить</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); margin-top: 15px;" onclick="addParent()">Добавить нового родителя</button>
+              </div>
+            `;
+            break;
+        }
+      }
+      
+      // Функции для управления родителями
+      function editParent(parentId) {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        const parentData = {
+          'voropaev': { name: 'Воропаев Андрей', email: 'voropaev@example.com', phone: '+7 (900) 123-45-67', children: ['Воропаев Макар', 'Воропаева Варвара'] },
+          'gudkov': { name: 'Гудков Дмитрий', email: 'gudkov@example.com', phone: '+7 (900) 234-56-78', children: ['Гудков Сергей'] },
+          'achin': { name: 'Ачин Сергей', email: 'achin@example.com', phone: '+7 (900) 345-67-89', children: ['Ачин Максим'] }
+        };
+        
+        const parent = parentData[parentId] || { name: '', email: '', phone: '', children: [] };
+        
+        content.innerHTML = `
+          <h3>Редактирование родителя</h3>
+          <form id="editParentForm" onsubmit="saveParent(event, '${parentId}')">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="parentName" style="display: block; margin-bottom: 5px; font-weight: bold;">Имя родителя:</label>
+                <input type="text" id="parentName" name="parentName" value="${parent.name}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentEmail" style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input type="email" id="parentEmail" name="parentEmail" value="${parent.email}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentPhone" style="display: block; margin-bottom: 5px; font-weight: bold;">Телефон:</label>
+                <input type="text" id="parentPhone" name="parentPhone" value="${parent.phone}" placeholder="Введите телефон" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentChildren" style="display: block; margin-bottom: 5px; font-weight: bold;">Дети:</label>
+                <textarea id="parentChildren" name="parentChildren" placeholder="Введите имена детей через запятую" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; height: 80px;">${parent.children.join(', ')}</textarea>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Сохранить</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('parents')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function addParent() {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <h3>Добавление нового родителя</h3>
+          <form id="addParentForm" onsubmit="saveNewParent(event)">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="parentName" style="display: block; margin-bottom: 5px; font-weight: bold;">Имя родителя:</label>
+                <input type="text" id="parentName" name="parentName" placeholder="Введите имя родителя" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentEmail" style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input type="email" id="parentEmail" name="parentEmail" placeholder="Введите email родителя" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentPhone" style="display: block; margin-bottom: 5px; font-weight: bold;">Телефон:</label>
+                <input type="text" id="parentPhone" name="parentPhone" placeholder="Введите телефон" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentPassword" style="display: block; margin-bottom: 5px; font-weight: bold;">Пароль:</label>
+                <input type="password" id="parentPassword" name="parentPassword" placeholder="Введите пароль для родителя" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="parentChildren" style="display: block; margin-bottom: 5px; font-weight: bold;">Дети:</label>
+                <textarea id="parentChildren" name="parentChildren" placeholder="Введите имена детей через запятую" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; height: 80px;"></textarea>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Добавить родителя</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('parents')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function saveParent(event, parentId) {
+        event.preventDefault();
+        alert('Родитель ' + parentId + ' успешно обновлен!');
+        showManagementTab('parents');
+      }
+      
+      function saveNewParent(event) {
+        event.preventDefault();
+        alert('Новый родитель успешно добавлен!');
+        showManagementTab('parents');
+      }
+      
+      function deleteParent(parentId) {
+        if (confirm('Вы уверены, что хотите удалить этого родителя?')) {
+          alert('Родитель ' + parentId + ' удален');
+          showManagementTab('parents');
+        }
+      }
+      
+      // Функции для управления учениками
+      function editStudent(studentId) {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        const studentNames = {
+          'makar': 'Воропаев Макар Андреевич',
+          'varvara': 'Воропаева Варвара Андреевна',
+          'sergey': 'Гудков Сергей Дмитриевич',
+          'maksim': 'Ачин Максим Сергеевич'
+        };
+        
+        const studentBirthDates = {
+          'makar': '23.04.2015',
+          'varvara': '23.04.2015',
+          'sergey': '05.03.2014',
+          'maksim': '18.02.2014'
+        };
+        
+        const studentParents = {
+          'makar': 'Воропаев Андрей',
+          'varvara': 'Воропаев Андрей',
+          'sergey': 'Гудков Дмитрий',
+          'maksim': 'Ачин Сергей'
+        };
+        
+        content.innerHTML = `
+          <h3>Редактирование ученика</h3>
+          <form id="editStudentForm" onsubmit="saveStudent(event, '${studentId}')">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="studentName" style="display: block; margin-bottom: 5px; font-weight: bold;">Имя ученика:</label>
+                <input type="text" id="studentName" name="studentName" value="${studentNames[studentId] || ''}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="studentBirthDate" style="display: block; margin-bottom: 5px; font-weight: bold;">Дата рождения:</label>
+                <input type="text" id="studentBirthDate" name="studentBirthDate" value="${studentBirthDates[studentId] || ''}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="studentParent" style="display: block; margin-bottom: 5px; font-weight: bold;">Родитель:</label>
+                <select id="studentParent" name="studentParent" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="voropaev" ${studentParents[studentId] === 'Воропаев Андрей' ? 'selected' : ''}>Воропаев Андрей</option>
+                  <option value="gudkov" ${studentParents[studentId] === 'Гудков Дмитрий' ? 'selected' : ''}>Гудков Дмитрий</option>
+                  <option value="achin" ${studentParents[studentId] === 'Ачин Сергей' ? 'selected' : ''}>Ачин Сергей</option>
+                </select>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="studentBranch" style="display: block; margin-bottom: 5px; font-weight: bold;">Филиал:</label>
+                <select id="studentBranch" name="studentBranch" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="zhulebino" ${['makar', 'varvara'].includes(studentId) ? 'selected' : ''}>Жулебино</option>
+                  <option value="dmitrievskoe" ${['sergey', 'maksim'].includes(studentId) ? 'selected' : ''}>Дмитриевского</option>
+                </select>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Сохранить</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('students')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function addStudent() {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <h3>Добавление нового ученика</h3>
+          <form id="addStudentForm" onsubmit="saveNewStudent(event)">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="studentName" style="display: block; margin-bottom: 5px; font-weight: bold;">Имя ученика:</label>
+                <input type="text" id="studentName" name="studentName" placeholder="Введите имя ученика" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="studentBirthDate" style="display: block; margin-bottom: 5px; font-weight: bold;">Дата рождения:</label>
+                <input type="text" id="studentBirthDate" name="studentBirthDate" placeholder="Введите дату рождения (дд.мм.гггг)" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="studentParent" style="display: block; margin-bottom: 5px; font-weight: bold;">Родитель:</label>
+                <select id="studentParent" name="studentParent" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="">Выберите родителя</option>
+                  <option value="voropaev">Воропаев Андрей</option>
+                  <option value="gudkov">Гудков Дмитрий</option>
+                  <option value="achin">Ачин Сергей</option>
+                </select>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="studentBranch" style="display: block; margin-bottom: 5px; font-weight: bold;">Филиал:</label>
+                <select id="studentBranch" name="studentBranch" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="">Выберите филиал</option>
+                  <option value="zhulebino">Жулебино</option>
+                  <option value="dmitrievskoe">Дмитриевского</option>
+                </select>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Добавить ученика</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('students')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function saveStudent(event, studentId) {
+        event.preventDefault();
+        alert('Ученик ' + studentId + ' успешно обновлен!');
+        showManagementTab('students');
+      }
+      
+      function saveNewStudent(event) {
+        event.preventDefault();
+        alert('Новый ученик успешно добавлен!');
+        showManagementTab('students');
+      }
+      
+      function deleteStudent(studentId) {
+        if (confirm('Вы уверены, что хотите удалить этого ученика?')) {
+          alert('Ученик ' + studentId + ' удален');
+          showManagementTab('students');
+        }
+      }
+      
+      // Функции для управления тренерами
+      function editCoach(coachId) {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <h3>Редактирование тренера</h3>
+          <form id="editCoachForm" onsubmit="saveCoach(event, '${coachId}')">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="coachName" style="display: block; margin-bottom: 5px; font-weight: bold;">Имя тренера:</label>
+                <input type="text" id="coachName" name="coachName" value="Захар (Тренер)" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="coachEmail" style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input type="email" id="coachEmail" name="coachEmail" value="zakhar@arsenal-school.ru" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="coachBranches" style="display: block; margin-bottom: 5px; font-weight: bold;">Филиалы:</label>
+                <select id="coachBranches" name="coachBranches" multiple style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="zhulebino" selected>Жулебино</option>
+                  <option value="dmitrievskoe" selected>Дмитриевского</option>
+                </select>
+                <small>Удерживайте Ctrl для выбора нескольких филиалов</small>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Сохранить</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('coaches')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function addCoach() {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <h3>Добавление нового тренера</h3>
+          <form id="addCoachForm" onsubmit="saveNewCoach(event)">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="coachName" style="display: block; margin-bottom: 5px; font-weight: bold;">Имя тренера:</label>
+                <input type="text" id="coachName" name="coachName" placeholder="Введите имя тренера" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="coachEmail" style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input type="email" id="coachEmail" name="coachEmail" placeholder="Введите email тренера" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="coachPassword" style="display: block; margin-bottom: 5px; font-weight: bold;">Пароль:</label>
+                <input type="password" id="coachPassword" name="coachPassword" placeholder="Введите пароль для тренера" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="coachBranches" style="display: block; margin-bottom: 5px; font-weight: bold;">Филиалы:</label>
+                <select id="coachBranches" name="coachBranches" multiple style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="zhulebino">Жулебино</option>
+                  <option value="dmitrievskoe">Дмитриевского</option>
+                </select>
+                <small>Удерживайте Ctrl для выбора нескольких филиалов</small>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Добавить тренера</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('coaches')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function saveCoach(event, coachId) {
+        event.preventDefault();
+        alert('Тренер ' + coachId + ' успешно обновлен!');
+        showManagementTab('coaches');
+      }
+      
+      function saveNewCoach(event) {
+        event.preventDefault();
+        alert('Новый тренер успешно добавлен!');
+        showManagementTab('coaches');
+      }
+      
+      function deleteCoach(coachId) {
+        if (confirm('Вы уверены, что хотите удалить этого тренера?')) {
+          alert('Тренер ' + coachId + ' удален');
+          showManagementTab('coaches');
+        }
+      }
+      
+      // Функции для управления филиалами
+      function editBranch(branchId) {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        // Здесь будет реализация формы редактирования филиала
+        content.innerHTML = `
+          <h3>Редактирование филиала</h3>
+          <form id="editBranchForm" onsubmit="saveBranch(event, '${branchId}')">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="branchName" style="display: block; margin-bottom: 5px; font-weight: bold;">Название филиала:</label>
+                <input type="text" id="branchName" name="branchName" value="Филиал ${branchId === 'zhulebino' ? 'Жулебино' : 'Ул. Дмитриевского'}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="branchAddress" style="display: block; margin-bottom: 5px; font-weight: bold;">Адрес:</label>
+                <input type="text" id="branchAddress" name="branchAddress" value="${branchId === 'zhulebino' ? 'г. Москва, район Жулебино' : 'г. Москва, район Дмитриевское'}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="branchPhone" style="display: block; margin-bottom: 5px; font-weight: bold;">Телефон:</label>
+                <input type="text" id="branchPhone" name="branchPhone" value="${branchId === 'zhulebino' ? '+7 (495) 123-45-67' : '+7 (495) 234-56-78'}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="branchEmail" style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input type="email" id="branchEmail" name="branchEmail" value="${branchId === 'zhulebino' ? 'zhulebino@arsenal-school.ru' : 'dmitrievskoe@arsenal-school.ru'}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Сохранить</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('branches')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function addBranch() {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <h3>Добавление нового филиала</h3>
+          <form id="addBranchForm" onsubmit="saveNewBranch(event)">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="branchName" style="display: block; margin-bottom: 5px; font-weight: bold;">Название филиала:</label>
+                <input type="text" id="branchName" name="branchName" placeholder="Введите название филиала" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="branchAddress" style="display: block; margin-bottom: 5px; font-weight: bold;">Адрес:</label>
+                <input type="text" id="branchAddress" name="branchAddress" placeholder="Введите адрес филиала" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="branchPhone" style="display: block; margin-bottom: 5px; font-weight: bold;">Телефон:</label>
+                <input type="text" id="branchPhone" name="branchPhone" placeholder="Введите телефон филиала" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="branchEmail" style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input type="email" id="branchEmail" name="branchEmail" placeholder="Введите email филиала" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Добавить филиал</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('branches')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function saveBranch(event, branchId) {
+        event.preventDefault();
+        alert('Филиал ' + branchId + ' успешно обновлен!');
+        showManagementTab('branches');
+      }
+      
+      function saveNewBranch(event) {
+        event.preventDefault();
+        alert('Новый филиал успешно добавлен!');
+        showManagementTab('branches');
+      }
+      
+      // Функции для управления расписанием
+      function editScheduleItem(itemId) {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        const scheduleData = {
+          'zhulebino_tuesday': { day: 'Вторник', time: '18:00-19:00', coach: 'Захар', group: 'Новички (6-8 лет)', branch: 'Жулебино' },
+          'zhulebino_thursday': { day: 'Четверг', time: '18:00-19:00', coach: 'Захар', group: 'Новички (6-8 лет)', branch: 'Жулебино' },
+          'zhulebino_saturday': { day: 'Суббота', time: '18:00-19:00', coach: 'Захар', group: 'Новички (6-8 лет)', branch: 'Жулебино' },
+          'dmitrievskoe_monday': { day: 'Понедельник', time: '17:30-18:30', coach: 'Захар', group: 'Юниоры (8-10 лет)', branch: 'Дмитриевского' },
+          'dmitrievskoe_wednesday': { day: 'Среда', time: '17:30-18:30', coach: 'Захар', group: 'Юниоры (8-10 лет)', branch: 'Дмитриевского' },
+          'dmitrievskoe_friday': { day: 'Пятница', time: '17:30-18:30', coach: 'Захар', group: 'Юниоры (8-10 лет)', branch: 'Дмитриевского' }
+        };
+        
+        const item = scheduleData[itemId] || { day: '', time: '', coach: '', group: '', branch: '' };
+        
+        content.innerHTML = `
+          <h3>Редактирование занятия</h3>
+          <form id="editScheduleForm" onsubmit="saveScheduleItem(event, '${itemId}')">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="margin-bottom: 15px;">
+                <label for="scheduleDay" style="display: block; margin-bottom: 5px; font-weight: bold;">День недели:</label>
+                <select id="scheduleDay" name="scheduleDay" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="Понедельник" ${item.day === 'Понедельник' ? 'selected' : ''}>Понедельник</option>
+                  <option value="Вторник" ${item.day === 'Вторник' ? 'selected' : ''}>Вторник</option>
+                  <option value="Среда" ${item.day === 'Среда' ? 'selected' : ''}>Среда</option>
+                  <option value="Четверг" ${item.day === 'Четверг' ? 'selected' : ''}>Четверг</option>
+                  <option value="Пятница" ${item.day === 'Пятница' ? 'selected' : ''}>Пятница</option>
+                  <option value="Суббота" ${item.day === 'Суббота' ? 'selected' : ''}>Суббота</option>
+                  <option value="Воскресенье" ${item.day === 'Воскресенье' ? 'selected' : ''}>Воскресенье</option>
+                </select>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="scheduleTime" style="display: block; margin-bottom: 5px; font-weight: bold;">Время:</label>
+                <input type="text" id="scheduleTime" name="scheduleTime" value="${item.time}" placeholder="Введите время (чч:мм-чч:мм)" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="scheduleCoach" style="display: block; margin-bottom: 5px; font-weight: bold;">Тренер:</label>
+                <select id="scheduleCoach" name="scheduleCoach" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="zakhar" ${item.coach === 'Захар' ? 'selected' : ''}>Захар</option>
+                </select>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="scheduleGroup" style="display: block; margin-bottom: 5px; font-weight: bold;">Группа:</label>
+                <input type="text" id="scheduleGroup" name="scheduleGroup" value="${item.group}" placeholder="Введите название группы" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label for="scheduleBranch" style="display: block; margin-bottom: 5px; font-weight: bold;">Филиал:</label>
+                <select id="scheduleBranch" name="scheduleBranch" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="zhulebino" ${item.branch === 'Жулебино' ? 'selected' : ''}>Жулебино</option>
+                  <option value="dmitrievskoe" ${item.branch === 'Дмитриевского' ? 'selected' : ''}>Дмитриевского</option>
+                </select>
+              </div>
+              
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">Сохранить</button>
+                <button type="button" class="btn btn-secondary" onclick="showManagementTab('schedule')">Отмена</button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function addScheduleItem() {
+        const content = document.getElementById('managementContent');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <h3>🎆 Добавление новой тренировки</h3>
+          <form id="addScheduleForm" onsubmit="saveNewScheduleItem(event)">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #dee2e6;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                  <label for="scheduleDay" style="display: block; margin-bottom: 8px; font-weight: bold; color: #023474;">📅 День недели:</label>
+                  <select id="scheduleDay" name="scheduleDay" style="width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 1rem; background: white;">
+                    <option value="">Выберите день недели</option>
+                    <option value="Понедельник">Понедельник</option>
+                    <option value="Вторник">Вторник</option>
+                    <option value="Среда">Среда</option>
+                    <option value="Четверг">Четверг</option>
+                    <option value="Пятница">Пятница</option>
+                    <option value="Суббота">Суббота</option>
+                    <option value="Воскресенье">Воскресенье</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="scheduleTime" style="display: block; margin-bottom: 8px; font-weight: bold; color: #023474;">⏰ Время:</label>
+                  <input type="text" id="scheduleTime" name="scheduleTime" placeholder="Например: 18:00-19:00" style="width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 1rem;" required>
+                </div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                  <label for="scheduleCoach" style="display: block; margin-bottom: 8px; font-weight: bold; color: #023474;">👥 Тренер:</label>
+                  <select id="scheduleCoach" name="scheduleCoach" style="width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 1rem; background: white;">
+                    <option value="">Выберите тренера</option>
+                    <option value="zakhar">💪 Захар (Основной тренер)</option>
+                    <option value="mikhail">⚽ Михаил (Помощник)</option>
+                    <option value="anna">🥅 Анна (Тренер по физподготовке)</option>
+                    <option value="igor">🏆 Игорь (Старший тренер)</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="scheduleGroup" style="display: block; margin-bottom: 8px; font-weight: bold; color: #023474;">🎯 Группа:</label>
+                  <input type="text" id="scheduleGroup" name="scheduleGroup" placeholder="Например: Новички (6-8 лет)" style="width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 1rem;" required>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 20px;">
+                <label for="scheduleBranch" style="display: block; margin-bottom: 8px; font-weight: bold; color: #023474;">🏢 Филиал:</label>
+                <select id="scheduleBranch" name="scheduleBranch" style="width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 1rem; background: white;">
+                  <option value="">Выберите филиал</option>
+                  <option value="zhulebino">🏢 Жулебино</option>
+                  <option value="dmitrievskoe">🏢 Дмитриевского</option>
+                </select>
+              </div>
+              
+              <div style="margin-bottom: 20px;">
+                <label for="scheduleNotes" style="display: block; margin-bottom: 8px; font-weight: bold; color: #023474;">📝 Примечания (необязательно):</label>
+                <textarea id="scheduleNotes" name="scheduleNotes" placeholder="Например: Особые упражнения, инвентарь и т.д." style="width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 1rem; height: 80px; resize: vertical;"></textarea>
+              </div>
+              
+              <div style="display: flex; gap: 15px; margin-top: 25px;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); flex: 1; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; color: white; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  ✨ Добавить тренировку
+                </button>
+                <button type="button" class="btn btn-secondary" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); flex: 1; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; color: white; border: none; cursor: pointer; transition: transform 0.2s;" onclick="showManagementTab('schedule')" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  ❌ Отмена
+                </button>
+              </div>
+            </div>
+          </form>
+        `;
+      }
+      
+      function saveScheduleItem(event, itemId) {
+        event.preventDefault();
+        alert('Занятие ' + itemId + ' успешно обновлено!');
+        showManagementTab('schedule');
+      }
+      
+      function saveNewScheduleItem(event) {
+        event.preventDefault();
+        
+        const day = document.getElementById('scheduleDay').value;
+        const time = document.getElementById('scheduleTime').value;
+        const coach = document.getElementById('scheduleCoach').value;
+        const group = document.getElementById('scheduleGroup').value;
+        const branch = document.getElementById('scheduleBranch').value;
+        const notes = document.getElementById('scheduleNotes').value;
+        
+        if (!day || !time || !coach || !group || !branch) {
+          alert('Пожалуйста, заполните все обязательные поля!');
+          return;
+        }
+        
+        const coachNames = {
+          'zakhar': 'Захар',
+          'mikhail': 'Михаил',
+          'anna': 'Анна',
+          'igor': 'Игорь'
+        };
+        
+        const branchNames = {
+          'zhulebino': 'Жулебино',
+          'dmitrievskoe': 'Дмитриевского'
+        };
+        
+        const successMessage = `✅ Новая тренировка успешно добавлена!
+
+📅 День: ${day}
+⏰ Время: ${time}
+👥 Тренер: ${coachNames[coach]}
+🎯 Группа: ${group}
+🏢 Филиал: ${branchNames[branch]}${notes ? '\n📝 Примечания: ' + notes : ''}`;
+        
+        alert(successMessage);
+        showManagementTab('schedule');
+      }
+      
+      function deleteScheduleItem(itemId) {
+        if (confirm('Вы уверены, что хотите удалить это занятие?')) {
+          alert('Занятие ' + itemId + ' удалено');
+          showManagementTab('schedule');
+        }
+      }
+      
+      // Функции для управления филиалами и расписанием
+      `);
+        console.log('Редактирование филиала:', branchId);
+      }
+      
+      " добавлен`);
+          console.log('Новый филиал:', branchName);
+          showManagementTab('branches');
+        }
+      }
+      
+      `);
+        console.log('Редактирование тренера:', coachId);
+      }
+      
+       удален`);
+          showManagementTab('coaches');
+        }
+      }
+      
+      " (${coachEmail}) добавлен`);
+            console.log('Новый тренер:', coachName, coachEmail);
+            showManagementTab('coaches');
+          }
+        }
+      }
+      
+      `);
+        console.log('Редактирование ученика:', studentId);
+      }
+      
+       удален`);
+          showManagementTab('students');
+        }
+      }
+      
+      " (род. ${birthDate}) добавлен`);
+            console.log('Новый ученик:', studentName, birthDate);
+            showManagementTab('students');
+          }
+        }
+      }
+      
+      `);
+        console.log('Редактирование занятия:', itemId);
+      }
+      
+       удалено`);
+          showManagementTab('schedule');
+        }
+      }
+      
+       ${time}`);
+            console.log('Новое занятие:', day, time);
+            showManagementTab('schedule');
+          }
+        }
+      }
+      
+      `);
+        console.log('Редактирование родителя:', parentId);
+      }
+      
+       удален`);
+          showManagementTab('parents');
+        }
+      }
+      
+      " (${parentEmail}, ${parentPhone}) добавлен`);
+              console.log('Новый родитель:', parentName, parentEmail, parentPhone);
+              showManagementTab('parents');
+            }
+          }
+        }
+      }
+      function createTestUser(role) {
+        const roleNames = {
+          'child': 'Ребенок',
+          'parent': 'Родитель', 
+          'manager': 'Управляющий',
+          'coach': 'Тренер',
+          'smm': 'SMM-менеджер'
+        };
+        
+        const userCounter = Object.keys(registeredUsers).length + Object.keys(testUsers).length + 1;
+        const email = `test${userCounter}@gs.com`;
+        const name = `Тестовый ${roleNames[role]} ${userCounter}`;
+        
+        const newUser = {
+          id: userCounter.toString(),
+          name: name,
+          email: email,
+          role: roleNames[role],
+          branch: 'zjulebino' // По умолчанию Жулебино
+        };
+        
+        // Добавляем пользователя в список зарегистрированных
+        registeredUsers[email] = newUser;
+        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        
+        alert(`Пользователь создан!
+Имя: ${name}
+Email: ${email}
+Роль: ${roleNames[role]}
+Пароль: admin`);
+        
+        // Обновляем таблицу пользователей, если она открыта
+        if (document.getElementById('userTableBody')) {
+          refreshUserTable();
+        }
+      }
+      
+      function createAllTestUsers() {
+        const roles = ['child', 'parent', 'manager', 'coach', 'smm'];
+        let createdUsers = [];
+        
+        roles.forEach(role => {
+          createTestUser(role);
+          createdUsers.push(role);
+        });
+        
+        alert(`Созданы все тестовые пользователи для ролей: ${createdUsers.join(', ')}\nПароль для всех: admin`);
+      }
+      
+      function createCustomUser() {
+        const fullName = document.getElementById('customUserFullName').value;
+        const email = document.getElementById('customUserEmail').value;
+        const birthDate = document.getElementById('customUserBirthDate').value;
+        const role = document.getElementById('customUserRole').value;
+        const branch = document.getElementById('customUserBranch').value;
+        
+        if (!fullName.trim() || !email.trim() || !birthDate) {
+          alert('Пожалуйста, заполните все обязательные поля');
+          return;
+        }
+        
+        // Проверка email формата
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          alert('Пожалуйста, введите корректный email адрес');
+          return;
+        }
+        
+        // Проверяем, что email уникален
+        if (testUsers[email] || registeredUsers[email]) {
+          alert('Пользователь с таким email уже существует');
+          return;
+        }
+        
+        const roleNames = {
+          'child': 'Ребенок',
+          'parent': 'Родитель',
+          'manager': 'Управляющий', 
+          'coach': 'Тренер',
+          'smm': 'SMM-менеджер'
+        };
+        
+        const newUser = {
+          id: Date.now().toString(),
+          name: fullName,
+          email: email,
+          birthDate: birthDate,
+          role: roleNames[role],
+          branch: branch
+        };
+        
+        // Добавляем пользователя в список зарегистрированных
+        registeredUsers[email] = newUser;
+        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        
+        // Форматируем дату для отображения
+        const formattedDate = new Date(birthDate).toLocaleDateString('ru-RU');
+        
+        alert(`Пользователь создан!
+
+Информация:
+ФИО: ${fullName}
+Email: ${email}
+Дата рождения: ${formattedDate}
+Роль: ${roleNames[role]}
+Пароль: admin
+
+Теперь вы можете войти с этими данными.`);
+        
+        // Очищаем форму
+        document.getElementById('customUserFullName').value = '';
+        document.getElementById('customUserEmail').value = '';
+        document.getElementById('customUserBirthDate').value = '';
+        document.getElementById('customUserRole').value = 'child';
+        document.getElementById('customUserBranch').value = 'zjulebino';
+        
+        // Обновляем таблицу пользователей, если она открыта
+        if (document.getElementById('userTableBody')) {
+          refreshUserTable();
+        }
+      }
+        registeredUsers[email] = newUser;
+        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        
+        alert(`Пользователь создан!
+Имя: ${name}
+Email: ${email}
+Роль: ${roleNames[role]}
+Пароль: admin`);
+        
+        // Очищаем форму
+        document.getElementById('customUserName').value = '';
+        document.getElementById('customUserEmail').value = '';
+        
+        // Обновляем таблицу пользователей
+        refreshUserTable();
+      }
+      
+      function refreshUserTable() {
+        const tableBody = document.getElementById('userTableBody');
+        if (!tableBody) return;
+        
+        // Очищаем таблицу
+        tableBody.innerHTML = '';
+        
+        // Добавляем тестовых пользователей
+        Object.values(testUsers).forEach(user => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${user.name}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${user.email}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${user.role}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${branches[user.branch] || user.branch}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+              <span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">Тестовый</span>
+              <button class="btn" style="background: #007bff; padding: 5px 10px; font-size: 0.8rem; margin-left: 5px;" onclick="testLoginFromTable('${user.email}', 'admin')">Войти</button>
+            </td>
+          `;
+        });
+        
+        // Добавляем зарегистрированных пользователей
+        Object.values(registeredUsers).forEach(user => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${user.name}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${user.email}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${user.role}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">${branches[user.branch] || user.branch}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+              <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="editUser('${user.email}')">Редактировать</button>
+              <button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 0.8rem; margin-left: 5px;" onclick="deleteUser('${user.email}')">Удалить</button>
+              <button class="btn" style="background: #007bff; padding: 5px 10px; font-size: 0.8rem; margin-left: 5px;" onclick="testLoginFromTable('${user.email}', 'admin')">Войти</button>
+            </td>
+          `;
+        });
+      }
+      
+      function testLoginFromTable(email, password) {
+        // Закрываем модальное окно управления
+        closeManagementModal();
+        
+        // Выполняем вход
+        setTimeout(() => {
+          testLogin(email, password);
+        }, 100);
+      }
+      
+      function editUser(email) {
+        const user = registeredUsers[email];
+        if (!user) {
+          alert('Пользователь не найден');
+          return;
+        }
+        
+        const newName = prompt('Введите новое имя:', user.name);
+        if (newName && newName.trim()) {
+          user.name = newName.trim();
+          registeredUsers[email] = user;
+          localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+          alert('Пользователь обновлен');
+          refreshUserTable();
+        }
+      }
+      
+      function deleteUser(email) {
+        if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+          delete registeredUsers[email];
+          localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+          alert('Пользователь удален');
+          refreshUserTable();
+        }
+      }
+      
+      // Функции для управления филиалами
+      
+      
+      
+      
+      // Функции для управления тренерами
+      
+      
+      
+      
+      
+      }
+      
+      // Функции для управления учениками
+      
+      
+      
+      
+      
+      }
+      
+      // Функции для управления расписанием
+      
+      
+      
+      
+      
+      }
+      
+      // Функции для управления родителями
+      
+      
+      
+      
+      
+      }
+      
+      
+
+      // Функция для обновления ссылки на скачивание APK
+      function updateDownloadLink() {
+        // Пока что используем заглушку, позже заменим на реальную ссылку
+        const downloadLink = document.getElementById('downloadApkLink');
+        if (downloadLink) {
+          downloadLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            showApkInfo();
+          });
+        }
+      }
+
+      // Функция для установки PWA
+      function installPwa() {
+        // Проверяем, поддерживает ли браузер установку PWA
+        if ('serviceWorker' in navigator) {
+          alert(
+            'Для установки приложения откройте этот сайт в браузере Chrome на вашем Android устройстве и следуйте инструкциям.'
+          );
+        } else {
+          alert(
+            'Ваш браузер не поддерживает установку PWA. Используйте Chrome на Android устройстве.'
+          );
+        }
+      }
+
+      // Инициализация
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM fully loaded and parsed');
+
+        // Log all important elements to check if they exist
+        console.log('Auth section:', document.getElementById('authSection'));
+        console.log('Dashboard:', document.getElementById('dashboard'));
+        console.log('Login tab:', document.getElementById('loginTab'));
+        console.log('Register tab:', document.getElementById('registerTab'));
+        console.log('Branch selector:', document.getElementById('branchSelector'));
+
+        // Проверяем, есть ли сохраненные данные о пользователе
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+          console.log('Found saved user, logging in');
+          loginUser(JSON.parse(savedUser));
+        }
+
+        // Устанавливаем начальное значение для роли
+        // Исправляем вызов функции selectRole
+        setTimeout(() => {
+          console.log('Initializing default selections');
+          selectRole('child');
+          // Также инициализируем первый филиал как выбранный по умолчанию
+          selectBranch('zjulebino');
+        }, 100);
+
+        // Обновляем ссылку на скачивание APK
+        updateDownloadLink();
+
+        // Добавляем обработчик для кнопки установки PWA
+        const installBtn = document.getElementById('installPwaButton');
+        if (installBtn) {
+          installBtn.addEventListener('click', installPwa);
+        }
+
+        // Регистрируем сервис-воркер
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function () {
+            navigator.serviceWorker
+              .register('/service-worker.js')
+              .then(function (registration) {
+                console.log('SW зарегистрирован: ', registration);
+              })
+              .catch(function (registrationError) {
+                console.log('SW регистрация не удалась: ', registrationError);
+              });
+          });
+        }
+
+        console.log('Initialization complete');
+        
+        // Новые функции для работы с календарем и расписанием
+        function showDaySchedule(day) {
+          const dayNames = {
+            'monday': 'Понедельник',
+            'tuesday': 'Вторник', 
+            'wednesday': 'Среда',
+            'thursday': 'Четверг',
+            'friday': 'Пятница',
+            'saturday': 'Суббота',
+            'sunday': 'Воскресенье'
+          };
+          
+          alert(`Показ расписания на ${dayNames[day]}\n\nЗдесь будет отображаться подробное расписание на выбранный день с возможностью редактирования.`);
+        }
+        
+        function confirmScheduleTransfer(itemId) {
+          alert(`Перенос тренировки ${itemId} подтвержден!`);
+          showManagementTab('schedule');
+        }
+        
+        function cancelScheduleTransfer(itemId) {
+          alert(`Перенос тренировки ${itemId} отменен!`);
+          showManagementTab('schedule');
+        }
+        
+        function bulkScheduleAction(action) {
+          const actions = {
+            'add_week': 'Добавить всю неделю',
+            'copy_week': 'Копировать неделю',
+            'assign_coaches': 'Назначить тренеров',
+            'cancel_day': 'Отменить день'
+          };
+          
+          alert(`Выполняется действие: ${actions[action]}\n\nЗдесь будет реализована логика массовых операций с расписанием.`);
+        }
+        
+        // Делаем основные функции глобальными для onclick событий
+        window.showTab = showTab;
+        window.selectRole = selectRole;
+        window.selectBranch = selectBranch;
+        window.login = login;
+        window.register = register;
+        window.testLogin = testLogin;
+        window.testButtonClick = testButtonClick;
+        window.debugShowTab = debugShowTab;
+        window.showManagementPanel = showManagementPanel;
+        window.closeManagementModal = closeManagementModal;
+        window.showManagementTab = showManagementTab;
+        window.refreshUserTable = refreshUserTable;
+        window.testLoginFromTable = testLoginFromTable;
+        window.editUser = editUser;
+        window.deleteUser = deleteUser;
+        window.createTestUser = createTestUser;
+        window.createAllTestUsers = createAllTestUsers;
+        window.createCustomUser = createCustomUser;
+        window.editBranch = editBranch;
+        window.addBranch = addBranch;
+        window.editCoach = editCoach;
+        window.deleteCoach = deleteCoach;
+        window.addCoach = addCoach;
+        window.editStudent = editStudent;
+        window.deleteStudent = deleteStudent;
+        window.addStudent = addStudent;
+        window.editScheduleItem = editScheduleItem;
+        window.deleteScheduleItem = deleteScheduleItem;
+        window.addScheduleItem = addScheduleItem;
+        window.editParent = editParent;
+        window.deleteParent = deleteParent;
+        window.addParent = addParent;
+        window.showDaySchedule = showDaySchedule;
+        window.confirmScheduleTransfer = confirmScheduleTransfer;
+        window.cancelScheduleTransfer = cancelScheduleTransfer;
+        window.bulkScheduleAction = bulkScheduleAction;
+        
+        console.log('Основные функции доступны глобально');
+      });
+
+      // Add a function to manually trigger tab display for debugging
+      function debugShowTab(tabName) {
+        console.log('Debug: Showing tab:', tabName);
+        const tab = document.getElementById(tabName + 'Tab');
+        if (tab) {
+          tab.style.display = 'block';
+          tab.classList.add('active');
+          console.log('Debug: Tab displayed');
+        } else {
+          console.error('Debug: Tab not found:', tabName + 'Tab');
+        }
+      }
+
+      // Debug function to check all elements
+      function debugCheckElements() {
+        console.log('=== Debug: Checking all elements ===');
+        console.log('showTab function exists:', typeof showTab === 'function');
+        console.log('selectRole function exists:', typeof selectRole === 'function');
+        console.log('selectBranch function exists:', typeof selectBranch === 'function');
+        const elementsToCheck = [
+          'authSection',
+          'dashboard',
+          'loginTab',
+          'registerTab',
+          'branchSelector',
+          'regName',
+          'regEmail',
+          'regPassword',
+          'regRole',
+          'regBranch',
+          'email',
+          'password',
+        ];
+
+        elementsToCheck.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            console.log(`✓ Element found: ${id}`);
+          } else {
+            console.error(`✗ Element NOT found: ${id}`);
+          }
+        });
+
+        // Check role options
+        const roleOptions = document.querySelectorAll('.role-option');
+        console.log(`Found ${roleOptions.length} role options`);
+
+        // Check branch cards
+        const branchCards = document.querySelectorAll('.branch-card');
+        console.log(`Found ${branchCards.length} branch cards`);
+
+        console.log('=== Debug: Element check complete ===');
+      }
+    </script>
+
+    <!-- Debug script to test functionality -->
+    <script>
+      // Simple test to verify the page is working
+      window.addEventListener('load', function () {
+        console.log('Page fully loaded');
+        // Test if essential functions exist
+        if (typeof showTab === 'function') {
+          console.log('showTab function is available');
+        } else {
+          console.error('showTab function is missing');
+        }
+
+        if (typeof selectRole === 'function') {
+          console.log('selectRole function is available');
+        } else {
+          console.error('selectRole function is missing');
+        }
+
+        if (typeof selectBranch === 'function') {
+          console.log('selectBranch function is available');
+        } else {
+          console.error('selectBranch function is missing');
+        }
+
+        // Run element check after a short delay
+        setTimeout(debugCheckElements, 1000);
+      });
+    </script>
+
+    <!-- Debug button in the header for easy access -->
+    <script>
+      // Add a debug button to the header
+      document.addEventListener('DOMContentLoaded', function () {
+        const header = document.querySelector('.header');
+        if (header) {
+          const debugBtn = document.createElement('button');
+          debugBtn.textContent = 'Debug Check';
+          debugBtn.className = 'btn btn-debug';
+          debugBtn.style.position = 'absolute';
+          debugBtn.style.top = '10px';
+          debugBtn.style.right = '10px';
+          debugBtn.style.fontSize = '0.7rem';
+          debugBtn.style.padding = '5px 10px';
+          debugBtn.onclick = debugCheckElements;
+          header.style.position = 'relative';
+          header.appendChild(debugBtn);
+        }
+        
+        // Проверяем глобальные функции
+        console.log('Проверка глобальных функций после DOMContentLoaded:');
+        console.log('window.showTab:', typeof window.showTab);
+        console.log('window.selectRole:', typeof window.selectRole);
+        console.log('window.selectBranch:', typeof window.selectBranch);
+        console.log('window.testButtonClick:', typeof window.testButtonClick);
+      });
+    </script>
+    
+    <!-- Ensure all functions are globally accessible -->
+    <script>
+      // Double-check that all essential functions are globally accessible
+      document.addEventListener('DOMContentLoaded', function() {
+        // Ensure all onclick functions are globally accessible
+        if (typeof showTab !== 'undefined') window.showTab = showTab;
+        if (typeof selectRole !== 'undefined') window.selectRole = selectRole;
+        if (typeof selectBranch !== 'undefined') window.selectBranch = selectBranch;
+        if (typeof login !== 'undefined') window.login = login;
+        if (typeof register !== 'undefined') window.register = register;
+        if (typeof testLogin !== 'undefined') window.testLogin = testLogin;
+        if (typeof debugShowTab !== 'undefined') window.debugShowTab = debugShowTab;
+        if (typeof testButtonClick !== 'undefined') window.testButtonClick = testButtonClick;
+        
+        console.log('All functions checked and made globally accessible');
+      });
+    </script>
+  </body>
+</html>

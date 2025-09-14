@@ -1,0 +1,60 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Expo",
+      "type": "reactnativeexpo",
+      "request": "launch",
+      "projectRoot": "${workspaceFolder}",
+      "platform": "all",
+      "expoServerPort": 19000,
+      "packagerPort": 19001,
+      "expoHostType": "lan"
+    },
+    {
+      "name": "Debug Android",
+      "type": "reactnativeexpo",
+      "request": "launch",
+      "projectRoot": "${workspaceFolder}",
+      "platform": "android",
+      "expoServerPort": 19000,
+      "packagerPort": 19001,
+      "expoHostType": "lan"
+    },
+    {
+      "name": "Debug iOS",
+      "type": "reactnativeexpo",
+      "request": "launch",
+      "projectRoot": "${workspaceFolder}",
+      "platform": "ios",
+      "expoServerPort": 19000,
+      "packagerPort": 19001,
+      "expoHostType": "lan"
+    },
+    {
+      "name": "Debug Web",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:19006",
+      "webRoot": "${workspaceFolder}",
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${webRoot}/node_modules/*",
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///*": "*"
+      }
+    },
+    {
+      "name": "Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["--runInBand"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "short_name": "Арсенал",
+  "name": "Футбольная школа Арсенал",
+  "icons": [
+    {
+      "src": "992cf1d34fb7a6bde5b1.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "b3a74c285a0e120c85bd.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "background_color": "#023474",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#023474",
+  "description": "Мобильное приложение футбольной школы Арсенал"
+}
