@@ -1,0 +1,20 @@
+# backend/.htaccess - Конфигурация Apache для REST API
+
+# Включение mod_rewrite
+RewriteEngine On
+
+# Если запрос не к реальному файлу или директории
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Перенаправляем все запросы к index.php
+RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+# Установка заголовков для CORS
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+
+# Обработка OPTIONS запросов
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]

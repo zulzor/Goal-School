@@ -1,0 +1,44 @@
+{
+  "short_name": "Арсенал",
+  "name": "Футбольная школа Арсенал",
+  "description": "Приложение футбольной школы Арсенал - управление тренировками, посещаемостью и прогрессом учеников",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#EF0107",
+  "background_color": "#ffffff",
+  "lang": "ru",
+  "dir": "ltr",
+  "orientation": "portrait",
+  "categories": ["education", "sports"],
+  "shortcuts": [
+    {
+      "name": "Главная",
+      "url": "/"
+    },
+    {
+      "name": "Новости",
+      "url": "/news"
+    },
+    {
+      "name": "Расписание",
+      "url": "/schedule"
+    }
+  ]
+}

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Футбольная школа "Арсенал"</title>
+    <meta name="description" content="Приложение футбольной школы Арсенал - управление тренировками, посещаемостью и прогрессом учеников">
+    <meta name="theme-color" content="#EF0107">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Арсенал">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                         Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            position: relative;
+        }
+        #root {
+            min-height: 100vh;
+            width: 100%;
+        }
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #EF0107 0%, #c20101 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        .logo {
+            width: 120px;
+            height: 120px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        .logo-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #EF0107;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .loading-text {
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 80%;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .app-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        .feature {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        .progress-bar {
+            width: 80%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: white;
+            width: 0%;
+            animation: progress 3s ease-in-out infinite;
+        }
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        .version {
+            position: absolute;
+            bottom: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+        }
+        .error-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #333 0%, #111 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .error-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            max-width: 80%;
+        }
+        .retry-button {
+            background-color: #EF0107;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .retry-button:hover {
+            background-color: #c20101;
+        }
+        .checking-connection {
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading-container" id="loadingContainer">
+            <div class="logo">
+                <div class="logo-text">А</div>
+            </div>
+            <div class="app-name">Футбольная школа "Арсенал"</div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Загрузка приложения футбольной школы "Арсенал"...</div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <div class="features">
+                <div class="feature">Управление тренировками</div>
+                <div class="feature">Отслеживание посещаемости</div>
+                <div class="feature">Мониторинг прогресса</div>
+                <div class="feature">Новости школы</div>
+                <div class="feature">Расписание занятий</div>
+                <div class="feature">Питание спортсменов</div>
+            </div>
+            <div class="version">Версия 1.0.0</div>
+        </div>
+        
+        <div class="error-container" id="errorContainer">
+            <div class="error-icon">⚠️</div>
+            <div class="error-title">Ошибка загрузки</div>
+            <div class="error-message" id="errorMessage">Не удалось загрузить приложение. Проверьте подключение к интернету и попробуйте снова.</div>
+            <button class="retry-button" id="retryButton" onclick="retryLoad()">Повторить попытку</button>
+        </div>
+    </div>
+    
+    <script>
+        // Client-side logging
+        function log(message) {
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${message}`;
+            console.log(logEntry);
+            
+            // Send to server if possible
+            fetch('/api/client-log', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: logEntry })
+            }).catch(err => {
+                console.error('Failed to send log to server:', err);
+            });
+        }
+        
+        // Log page load start
+        log('Page load started');
+        
+        // Функция для повторной попытки загрузки
+        function retryLoad() {
+            log('Retry load function called');
+            const button = document.getElementById('retryButton');
+            button.textContent = 'Проверка подключения...';
+            button.classList.add('checking-connection');
+            button.disabled = true;
+            
+            // Проверяем подключение к серверу
+            fetch('/api/health', { method: 'GET', cache: 'no-cache' })
+                .then(response => {
+                    log('Health check response received: ' + response.status);
+                    if (response.ok) {
+                        // Если подключение восстановлено, показываем загрузку
+                        document.getElementById('errorContainer').style.display = 'none';
+                        document.getElementById('loadingContainer').style.display = 'flex';
+                        button.textContent = 'Повторить попытку';
+                        button.classList.remove('checking-connection');
+                        button.disabled = false;
+                        
+                        // Перезагружаем страницу для нормальной загрузки
+                        log('Reloading page for normal load');
+                        window.location.reload();
+                    } else {
+                        throw new Error('Server not responding with OK status');
+                    }
+                })
+                .catch(() => {
+                    log('Health check failed');
+                    // В случае ошибки возвращаем кнопку в исходное состояние
+                    button.textContent = 'Повторить попытку';
+                    button.classList.remove('checking-connection');
+                    button.disabled = false;
+                    
+                    // Показываем сообщение об ошибке
+                    document.getElementById('errorMessage').textContent = 'Подключение к серверу не восстановлено. Пожалуйста, проверьте ваше соединение с интернетом и доступность сервера.';
+                    log('Error message updated for failed health check');
+                });
+        }
+        
+        // Обработка ошибок загрузки ресурсов
+        window.addEventListener('error', function(e) {
+            log('Resource load error: ' + e.error.message + ' (target: ' + e.target.tagName + ', src: ' + e.target.src + ')');
+            console.error('Resource load error:', e.error);
+            // Показываем сообщение об ошибке только для критических ресурсов
+            if (e.target.tagName === 'SCRIPT' && e.target.src) {
+                log('Critical script load failure detected');
+                // Проверяем, доступен ли сервер
+                fetch('/api/health', { method: 'GET', cache: 'no-cache' })
+                    .then(response => {
+                        if (!response.ok) {
+                            document.getElementById('errorMessage').textContent = 'Сервер недоступен. Пожалуйста, проверьте доступность сервера.';
+                            log('Server unreachable, showing server error message');
+                        } else {
+                            document.getElementById('errorMessage').textContent = 'Не удалось загрузить необходимые компоненты приложения. Проверьте подключение к интернету и попробуйте снова.';
+                            log('Server reachable but components failed, showing component error message');
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('errorMessage').textContent = 'Сервер недоступен. Пожалуйста, проверьте доступность сервера.';
+                        log('Server check failed, showing server error message');
+                    });
+                
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('errorContainer').style.display = 'flex';
+                log('Switched to error display');
+            }
+        }, true);
+        
+        // Таймаут для обнаружения зависания загрузки
+        setTimeout(() => {
+            log('Load timeout check executed');
+            if (document.getElementById('loadingContainer').style.display !== 'none') {
+                log('Load timeout detected, showing error');
+                // Проверяем, доступен ли сервер
+                fetch('/api/health', { method: 'GET', cache: 'no-cache' })
+                    .then(response => {
+                        if (!response.ok) {
+                            document.getElementById('errorMessage').textContent = 'Сервер недоступен. Пожалуйста, проверьте доступность сервера.';
+                            log('Server unreachable during timeout, showing server error message');
+                        } else {
+                            document.getElementById('errorMessage').textContent = 'Время ожидания загрузки приложения истекло. Проверьте подключение к интернету и попробуйте снова.';
+                            log('Server reachable but timeout occurred, showing timeout error message');
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('errorMessage').textContent = 'Сервер недоступен. Пожалуйста, проверьте доступность сервера.';
+                        log('Server check failed during timeout, showing server error message');
+                    });
+                
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('errorContainer').style.display = 'flex';
+                log('Switched to error display due to timeout');
+            } else {
+                log('Load completed before timeout');
+            }
+        }, 60000); // Увеличен таймаут до 60 секунд для больших файлов
+        
+        // Log when page is fully loaded
+        window.addEventListener('load', function() {
+            log('Page fully loaded');
+        });
+    </script>
+    
+    <!-- Подключаем основной бандл приложения -->
+    <script src="main.js" onerror="retryLoad()"></script>
+</body>
+</html>
